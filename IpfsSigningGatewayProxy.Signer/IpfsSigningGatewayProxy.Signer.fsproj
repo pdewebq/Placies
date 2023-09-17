@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Program.fs"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.5" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\IpfsSigningGatewayProxy.Shared\IpfsSigningGatewayProxy.Shared.fsproj" />
+    </ItemGroup>
+
+</Project>

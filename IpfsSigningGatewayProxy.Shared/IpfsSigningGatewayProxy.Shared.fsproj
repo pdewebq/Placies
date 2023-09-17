@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>IpfsSigningGatewayProxy</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Utils.fs" />
+        <Compile Include="MultiCodecs.fs" />
+        <Compile Include="Library.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
+        <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.5" />
+    </ItemGroup>
+
+</Project>
