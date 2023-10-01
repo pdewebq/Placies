@@ -2,47 +2,12 @@
 
 open System.IO
 open System.Security.Cryptography
-open System.Text
 open Ipfs
 open Org.BouncyCastle.Crypto.Parameters
 open Org.BouncyCastle.OpenSsl
 open Org.BouncyCastle.Security
 
 open IpfsSigningGatewayProxy
-
-let signAddress (signingAddress: SigningAddress) (privateKey: RSA) (hashAlg: HashAlgorithmName) (padding: RSASignaturePadding) =
-    let stream = new MemoryStream()
-    use streamWriter = new BinaryWriter(stream)
-    stream.WriteMultiCodec("varsig")
-    stream.WriteMultiCodec("rsa-pub")
-    match hashAlg with
-    | Equals HashAlgorithmName.SHA256 ->
-        stream.WriteMultiCodec("sha2-256")
-        match signingAddress with
-        | SigningAddress.Ipfs cid ->
-            let signingDataBytes = cid.ToArray()
-            let signatureBytes = privateKey.SignData(signingDataBytes, hashAlg, padding)
-            stream.WriteVarint(signatureBytes.Length)
-            stream.WriteMultiCodec("ipfs")
-            stream.WriteMultiCodec("cidv1")
-            streamWriter.Write(signatureBytes)
-        | SigningAddress.Ipns (SigningIpnsAddress.Key libp2pKey) ->
-            let signingDataBytes = libp2pKey.ToArray()
-            let signatureBytes = privateKey.SignData(signingDataBytes, hashAlg, padding)
-            stream.WriteVarint(signatureBytes.Length)
-            stream.WriteMultiCodec("ipns")
-            stream.WriteMultiCodec("libp2p-key")
-            streamWriter.Write(signatureBytes)
-        | SigningAddress.Ipns (SigningIpnsAddress.DnsName dnsName) ->
-            let signingDataBytes = Encoding.UTF8.GetBytes(dnsName)
-            let signatureBytes = privateKey.SignData(signingDataBytes, hashAlg, padding)
-            stream.WriteVarint(signatureBytes.Length)
-            stream.WriteMultiCodec("ipns")
-            stream.WriteMultiCodec("dns")
-            streamWriter.Write(signatureBytes)
-    | _ ->
-        invalidOp $"Not supported hash algorithm: {hashAlg}"
-    stream
 
 [<EntryPoint>]
 let main args =
@@ -65,19 +30,19 @@ let main args =
     match input with
     | Regex @"^\/ipfs\/(.+)$" [ cidStr ] ->
         let signingAddress = SigningAddress.Ipfs (Cid.Decode(cidStr))
-        let signature = signAddress signingAddress privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
+        let signature = SigningAddress.signAddress signingAddress privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
         let signature = MultiBase.Encode(signature.ToArray(), "base58btc")
-        printfn $"/ipfs/cidv1/{cidStr} signature: {signature}"
+        printfn $"/ipfs/cidv1/{cidStr} varsig: {signature}"
     | Regex @"^\/ipns\/(.+)$" [ ipnsName ] ->
-        let signingIpnsAddress = SigningIpnsAddress.parseIpnsName ipnsName true
+        let signingIpnsAddress = SigningIpnsAddress.parseIpnsName ipnsName false
         let signingAddress = SigningAddress.Ipns signingIpnsAddress
-        let signature = signAddress signingAddress privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
-        let signature = MultiBase.Encode(signature.ToArray(), "base58btc")
+        let varsig = SigningAddress.signAddress signingAddress privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
+        let varsig = MultiBase.Encode(varsig.ToArray(), "base58btc")
         match signingIpnsAddress with
         | SigningIpnsAddress.Key _ ->
-            printfn $"/ipns/libp2p-key/{ipnsName} signature: {signature}"
+            printfn $"/ipns/libp2p-key/{ipnsName} varsig: {varsig}"
         | SigningIpnsAddress.DnsName _ ->
-            printfn $"/ipns/dns/{ipnsName} signature: {signature}"
+            printfn $"/ipns/dns/{ipnsName} varsig: {varsig}"
     | _ ->
         failwith $"Invalid input '{input}'"
 
