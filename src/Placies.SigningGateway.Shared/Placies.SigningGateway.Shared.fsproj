@@ -7,14 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Utils.fs" />
         <Compile Include="MultiCodecs.fs" />
         <Compile Include="Library.fs"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
-        <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.5" />
+      <ProjectReference Include="..\Placies.Gateway\Placies.Gateway.fsproj" />
     </ItemGroup>
 
 </Project>

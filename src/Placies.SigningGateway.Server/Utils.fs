@@ -1,5 +1,5 @@
 [<AutoOpen>]
-module IpfsSigningGatewayProxy.Server.Utils
+module Placies.SigningGateway.Server.Utils
 
 open Microsoft.AspNetCore.Http
 

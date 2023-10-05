@@ -1,5 +1,5 @@
 [<AutoOpen>]
-module IpfsSigningGatewayProxy.Utils
+module Placies.Utils
 
 open System
 open System.Diagnostics.CodeAnalysis
@@ -20,9 +20,17 @@ let (|Regex|_|) ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern: string) 
 [<Obsolete("TODO")>]
 let todo<'a> : 'a = failwith "TODO"
 
+let inline ( ^ ) f x = f x
+
 
 [<RequireQualifiedAccess>]
 module Result =
+
+    let getOkOrRaise (onError: 'e -> exn) (res: Result<'a, 'e>) : 'a =
+        match res with
+        | Ok a -> a
+        | Error e -> raise (onError e)
+
 
     let getOk (res: Result<'a, 'e>) : 'a =
         match res with
@@ -43,3 +51,14 @@ module Option =
         match isSuccess, value with
         | true, value -> Some value
         | false, _ -> None
+
+
+[<RequireQualifiedAccess>]
+module ArraySegment =
+
+    // [<return: Struct>]
+    let (|Nil|Cons|) (source: ArraySegment<'a>) =
+        if source.Count = 0 then
+            Nil
+        else
+            Cons (source.[0], source.Slice(1))

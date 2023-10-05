@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.SigningGateway.Server", "src\Placies.SigningGateway.Server\Placies.SigningGateway.Server.fsproj", "{14D3FC41-658A-4692-B30B-D24A620BE104}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.SigngingGateway.Signer", "src\Placies.SigngingGateway.Signer\Placies.SigngingGateway.Signer.fsproj", "{A3464E32-1AC2-406B-B4DF-450DBF5977A3}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.SigningGateway.Shared", "src\Placies.SigningGateway.Shared\Placies.SigningGateway.Shared.fsproj", "{56D30709-B055-4F03-96B9-AC1F37048070}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateway", "src\Placies.Gateway\Placies.Gateway.fsproj", "{469C5970-B041-499F-B2CC-48776F3B5FF3}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Utils", "src\Placies.Utils\Placies.Utils.fsproj", "{75A83038-FC2F-4B81-AE2F-CC67828B1E96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{14D3FC41-658A-4692-B30B-D24A620BE104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14D3FC41-658A-4692-B30B-D24A620BE104}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14D3FC41-658A-4692-B30B-D24A620BE104}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14D3FC41-658A-4692-B30B-D24A620BE104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3464E32-1AC2-406B-B4DF-450DBF5977A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3464E32-1AC2-406B-B4DF-450DBF5977A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3464E32-1AC2-406B-B4DF-450DBF5977A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3464E32-1AC2-406B-B4DF-450DBF5977A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56D30709-B055-4F03-96B9-AC1F37048070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56D30709-B055-4F03-96B9-AC1F37048070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56D30709-B055-4F03-96B9-AC1F37048070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56D30709-B055-4F03-96B9-AC1F37048070}.Release|Any CPU.Build.0 = Release|Any CPU
+		{469C5970-B041-499F-B2CC-48776F3B5FF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{469C5970-B041-499F-B2CC-48776F3B5FF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{469C5970-B041-499F-B2CC-48776F3B5FF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{469C5970-B041-499F-B2CC-48776F3B5FF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75A83038-FC2F-4B81-AE2F-CC67828B1E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75A83038-FC2F-4B81-AE2F-CC67828B1E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75A83038-FC2F-4B81-AE2F-CC67828B1E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75A83038-FC2F-4B81-AE2F-CC67828B1E96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

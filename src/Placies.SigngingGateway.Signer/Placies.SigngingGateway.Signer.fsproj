@@ -10,11 +10,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.5" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\IpfsSigningGatewayProxy.Shared\IpfsSigningGatewayProxy.Shared.fsproj" />
+      <ProjectReference Include="..\Placies.SigningGateway.Shared\Placies.SigningGateway.Shared.fsproj" />
     </ItemGroup>
 
 </Project>

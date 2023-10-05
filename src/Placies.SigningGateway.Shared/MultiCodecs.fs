@@ -1,4 +1,4 @@
-namespace IpfsSigningGatewayProxy
+namespace Placies.SigningGateway
 
 open System
 open System.Numerics

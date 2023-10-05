@@ -1,4 +1,4 @@
-﻿module IpfsSigningGatewayProxy.Signer.Program
+﻿module Placies.SigningGateway.Signer.Program
 
 open System.IO
 open System.Security.Cryptography
@@ -7,7 +7,9 @@ open Org.BouncyCastle.Crypto.Parameters
 open Org.BouncyCastle.OpenSsl
 open Org.BouncyCastle.Security
 
-open IpfsSigningGatewayProxy
+open Placies
+open Placies.Gateway
+open Placies.SigningGateway
 
 [<EntryPoint>]
 let main args =
@@ -29,19 +31,19 @@ let main args =
     let input = args.[1]
     match input with
     | Regex @"^\/ipfs\/(.+)$" [ cidStr ] ->
-        let signingAddress = SigningAddress.Ipfs (Cid.Decode(cidStr))
-        let signature = SigningAddress.signAddress signingAddress privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
-        let signature = MultiBase.Encode(signature.ToArray(), "base58btc")
-        printfn $"/ipfs/cidv1/{cidStr} varsig: {signature}"
-    | Regex @"^\/ipns\/(.+)$" [ ipnsName ] ->
-        let signingIpnsAddress = SigningIpnsAddress.parseIpnsName ipnsName false
-        let signingAddress = SigningAddress.Ipns signingIpnsAddress
-        let varsig = SigningAddress.signAddress signingAddress privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
+        let contentRoot = IpfsContentRoot.Ipfs (Cid.Decode(cidStr))
+        let varsig = SigningContentRoot.signContentRoot contentRoot privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
         let varsig = MultiBase.Encode(varsig.ToArray(), "base58btc")
-        match signingIpnsAddress with
-        | SigningIpnsAddress.Key _ ->
+        printfn $"/ipfs/cidv1/{cidStr} varsig: {varsig}"
+    | Regex @"^\/ipns\/(.+)$" [ ipnsName ] ->
+        let contentRootIpns = IpfsContentRootIpns.parseIpnsName ipnsName false
+        let contentRoot = IpfsContentRoot.Ipns contentRootIpns
+        let varsig = SigningContentRoot.signContentRoot contentRoot privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
+        let varsig = MultiBase.Encode(varsig.ToArray(), "base58btc")
+        match contentRootIpns with
+        | IpfsContentRootIpns.Key _ ->
             printfn $"/ipns/libp2p-key/{ipnsName} varsig: {varsig}"
-        | SigningIpnsAddress.DnsName _ ->
+        | IpfsContentRootIpns.DnsName _ ->
             printfn $"/ipns/dns/{ipnsName} varsig: {varsig}"
     | _ ->
         failwith $"Invalid input '{input}'"
