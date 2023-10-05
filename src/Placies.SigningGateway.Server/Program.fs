@@ -142,7 +142,13 @@ let main args =
                             gatewayResponse.ResponseHeaders.Remove(HeaderNames.Location) |> ignore
                             gatewayResponse.ResponseHeaders.Add(HeaderNames.Location, locationValues)
 
-                    ctx.Response.Cookies.Append(signingAddressCookieKey gatewayRequest.ContentRoot, varsigStr)
+                    ctx.Response.Cookies.Append(
+                        signingAddressCookieKey gatewayRequest.ContentRoot,
+                        varsigStr,
+                        CookieBuilder(
+                            Expiration = TimeSpan.Parse(app.Configuration.["SigningGateway:CookieExpiration"])
+                        ).Build(ctx)
+                    )
                     do! GatewayResponse.toHttpResponse ctx.Response gatewayResponse
                     return! ctx.Response.CompleteAsync()
             }
