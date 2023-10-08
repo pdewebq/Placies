@@ -10,6 +10,12 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateway", "src\Plac
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Utils", "src\Placies.Utils\Placies.Utils.fsproj", "{75A83038-FC2F-4B81-AE2F-CC67828B1E96}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.DagJson", "src\Placies.Ipld.DagJson\Placies.Ipld.DagJson.fsproj", "{6FAA63F9-6A7B-4C0B-BCBD-A4773AB1EA4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D469DDCB-8563-4AC2-8CBD-3E4D9892C26A}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.Tests", "tests\Placies.Ipld.Tests\Placies.Ipld.Tests.fsproj", "{8FA91459-C8C6-43A4-ADC5-5D91EA7A249D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +42,16 @@ Global
 		{75A83038-FC2F-4B81-AE2F-CC67828B1E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75A83038-FC2F-4B81-AE2F-CC67828B1E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75A83038-FC2F-4B81-AE2F-CC67828B1E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FAA63F9-6A7B-4C0B-BCBD-A4773AB1EA4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FAA63F9-6A7B-4C0B-BCBD-A4773AB1EA4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FAA63F9-6A7B-4C0B-BCBD-A4773AB1EA4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FAA63F9-6A7B-4C0B-BCBD-A4773AB1EA4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FA91459-C8C6-43A4-ADC5-5D91EA7A249D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FA91459-C8C6-43A4-ADC5-5D91EA7A249D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FA91459-C8C6-43A4-ADC5-5D91EA7A249D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FA91459-C8C6-43A4-ADC5-5D91EA7A249D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8FA91459-C8C6-43A4-ADC5-5D91EA7A249D} = {D469DDCB-8563-4AC2-8CBD-3E4D9892C26A}
 	EndGlobalSection
 EndGlobal

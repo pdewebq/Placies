@@ -44,6 +44,9 @@ module Result =
             Error ex
 
 
+type ResultExn<'a> = Result<'a, exn>
+
+
 [<RequireQualifiedAccess>]
 module Option =
 
@@ -62,3 +65,16 @@ module ArraySegment =
             Nil
         else
             Cons (source.[0], source.Slice(1))
+
+
+[<RequireQualifiedAccess>]
+module Array =
+
+    let tryExactlyTwo (source: 'a array) : ('a * 'a) option =
+        if source.Length = 2 then
+            Some (source.[0], source.[1])
+        else
+            None
+
+    let exactlyTwo (source: 'a array) : 'a * 'a =
+        tryExactlyTwo source |> Option.get
