@@ -144,7 +144,7 @@ type Fixture = {
 
 type DagJsonTests(output: ITestOutputHelper) =
 
-    static do ShipyardMultiCodec.registerMore ()
+    static do DagJsonCodec.AddShipyardMulticodec()
 
     // static member GetFixtures(): obj array seq = seq {
     //     for name, jsonString, expectedDataModelNode in fixtures () do

@@ -111,6 +111,8 @@ module DagJson =
             Error $"Invalid JsonNode: %A{jsonNode}"
 
 type DagJsonCodec() =
+    static member AddShipyardMulticodec() =
+        Ipfs.Registry.Codec.Register("dag-json", 0x0129) |> ignore
     interface ICodec with
         member _.CodecName = "dag-json"
 

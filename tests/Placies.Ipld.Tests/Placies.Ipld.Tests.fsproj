@@ -35,7 +35,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Placies.Ipld.DagJson\Placies.Ipld.DagJson.fsproj" />
+        <ProjectReference Include="..\..\src\Placies.Ipld\Placies.Ipld.fsproj" />
+        <ProjectReference Include="..\..\src\Placies.Ipld.DagJson\Placies.Ipld.DagJson.fsproj" />
     </ItemGroup>
 
 </Project>
