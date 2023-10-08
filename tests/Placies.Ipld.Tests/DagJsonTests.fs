@@ -179,8 +179,8 @@ type DagJsonTests(output: ITestOutputHelper) =
 
     // ----
 
-    static member GetFixtures2(): obj array seq = seq {
-        let fixtures = seq {
+    static member GetFixtures2(): TheoryData<Fixture> =
+        TheoryData<_>() {
             for fixtureDir in Directory.EnumerateDirectories("./codec-fixtures/fixtures") do
                 let fixtureName = Path.GetFileName(fixtureDir)
                 let entries = [
@@ -197,9 +197,6 @@ type DagJsonTests(output: ITestOutputHelper) =
                 { Name = fixtureName
                   Entries = entries }
         }
-        for fixture in fixtures do
-            yield [| box fixture |]
-    }
 
     static member FixturesToSkip = readOnlyDict [
         "float--1e-323", "Too large number"
