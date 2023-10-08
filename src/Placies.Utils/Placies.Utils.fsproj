@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <Compile Include="Utils.fs" />
+        <Compile Include="AddableBuilder.fs" />
     </ItemGroup>
 
     <ItemGroup>
