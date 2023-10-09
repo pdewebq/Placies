@@ -61,7 +61,7 @@ type DagJsonTests(output: ITestOutputHelper) =
                 output.WriteLine("")
 
                 use reencodedDataStream = new MemoryStream()
-                (dagJsonCodec :> ICodec).Encode(reencodedDataStream, dataModelNode)
+                let reencodedCid = Codec.encodeWithCid dagJsonCodec 1 MultiHashInfos.Sha2_256 dataModelNode reencodedDataStream
                 let reencodedDataBytes = reencodedDataStream.ToArray()
 
                 output.WriteLine("Reencoded bytes:")
@@ -70,9 +70,6 @@ type DagJsonTests(output: ITestOutputHelper) =
                 output.WriteLine("Reencoded text:")
                 output.WriteLine(Encoding.UTF8.GetString(reencodedDataBytes))
                 output.WriteLine("")
-
-                let reencodedMultiHash = MultiHash.computeFromBytes reencodedDataBytes MultiHashInfos.Sha2_256
-                let reencodedCid = Cid.create 1 (dagJsonCodec :> ICodec).CodecInfo.Code reencodedMultiHash
                 output.WriteLine($"Reencoded CID: {reencodedCid}")
 
                 test <@ Cid.encode fixtureEntry.Cid = Cid.encode reencodedCid @>

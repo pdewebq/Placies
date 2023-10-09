@@ -49,15 +49,12 @@ type DagCborTests(output: ITestOutputHelper) =
                 output.WriteLine("")
 
                 use reencodedDataStream = new MemoryStream()
-                (dagCborCodec :> ICodec).Encode(reencodedDataStream, dataModelNode)
+                let reencodedCid = Codec.encodeWithCid dagCborCodec 1 MultiHashInfos.Sha2_256 dataModelNode reencodedDataStream
                 let reencodedDataBytes = reencodedDataStream.ToArray()
 
                 output.WriteLine("Reencoded bytes:")
                 output.WriteLine(reencodedDataBytes.ToHexString())
                 output.WriteLine("")
-
-                let reencodedMultiHash = MultiHash.computeFromBytes reencodedDataBytes MultiHashInfos.Sha2_256
-                let reencodedCid = Cid.create 1 (dagCborCodec :> ICodec).CodecInfo.Code reencodedMultiHash
                 output.WriteLine($"Reencoded CID: {reencodedCid}")
 
                 test <@ Cid.encode fixtureEntry.Cid = Cid.encode reencodedCid @>
