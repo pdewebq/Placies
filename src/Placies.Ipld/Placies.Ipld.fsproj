@@ -6,6 +6,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Include="MultiBase.fs" />
+      <Compile Include="MultiCodec.fs" />
+      <Compile Include="MultiHash.fs" />
       <Compile Include="Cid.fs" />
       <Compile Include="DataModel.fs" />
       <Compile Include="Codec.fs" />

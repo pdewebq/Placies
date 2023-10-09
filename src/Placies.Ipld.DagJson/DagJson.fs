@@ -6,6 +6,7 @@ open System.Text.Json
 open System.Text.Json.Nodes
 open FsToolkit.ErrorHandling
 open Placies
+open Placies.Multiformats
 open Placies.Ipld
 
 [<AutoOpen>]
@@ -58,9 +59,7 @@ module DagJson =
             JsonObject([
                 KeyValuePair(
                     "/",
-                    JsonValue.Create(
-                        cid.ShipyardCid.Encode()
-                    ) :> JsonNode
+                    JsonValue.Create(Cid.encode cid) :> JsonNode
                 )
             ])
 
@@ -83,7 +82,7 @@ module DagJson =
                 | :? JsonValue as slashJsonValue ->
                     result {
                         let! cidStr = slashJsonValue.TryGetValue<string>() |> Option.ofTryByref |> Result.requireSome "Scalar is not a string"
-                        let! cid = Cid.tryDecode cidStr |> Result.mapError (fun ex -> $"Invalid CID: {ex}")
+                        let! cid = Cid.tryParse cidStr |> Result.mapError (fun ex -> $"Invalid CID: {ex}")
                         return DataModelNode.Link cid
                     }
                 | :? JsonObject as slashJsonObject ->
@@ -111,10 +110,15 @@ module DagJson =
             Error $"Invalid JsonNode: %A{jsonNode}"
 
 type DagJsonCodec() =
+    static let mutable isCodecAdded = false
     static member AddShipyardMulticodec() =
-        Ipfs.Registry.Codec.Register("dag-json", 0x0129) |> ignore
+        if not isCodecAdded then
+            let dagJson = MultiCodecInfos.DagJson
+            Ipfs.Registry.Codec.Register(dagJson.Name, dagJson.Code) |> ignore
+            isCodecAdded <- true
+
     interface ICodec with
-        member _.CodecName = "dag-json"
+        member _.CodecInfo = MultiCodecInfos.DagJson
 
         member this.Encode(writeToStream, dataModelNode) =
             let jsonNode = DagJson.encode dataModelNode
