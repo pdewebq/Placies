@@ -18,6 +18,7 @@
     <ItemGroup>
         <Compile Include="IpldFixtures.fs" />
         <Compile Include="DagJsonTests.fs" />
+        <Compile Include="DagCborTests.fs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -36,6 +37,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\src\Placies.Ipld.DagCbor\Placies.Ipld.DagCbor.fsproj" />
         <ProjectReference Include="..\..\src\Placies.Ipld\Placies.Ipld.fsproj" />
         <ProjectReference Include="..\..\src\Placies.Ipld.DagJson\Placies.Ipld.DagJson.fsproj" />
     </ItemGroup>

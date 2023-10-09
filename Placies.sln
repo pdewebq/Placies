@@ -18,6 +18,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.Tests", "tests
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld", "src\Placies.Ipld\Placies.Ipld.fsproj", "{23B55977-4109-4C63-9171-E30008CFF8C4}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.DagCbor", "src\Placies.Ipld.DagCbor\Placies.Ipld.DagCbor.fsproj", "{7E952B9D-E4AB-4277-B059-69A5585EE65C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{23B55977-4109-4C63-9171-E30008CFF8C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23B55977-4109-4C63-9171-E30008CFF8C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23B55977-4109-4C63-9171-E30008CFF8C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E952B9D-E4AB-4277-B059-69A5585EE65C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E952B9D-E4AB-4277-B059-69A5585EE65C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E952B9D-E4AB-4277-B059-69A5585EE65C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E952B9D-E4AB-4277-B059-69A5585EE65C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8FA91459-C8C6-43A4-ADC5-5D91EA7A249D} = {D469DDCB-8563-4AC2-8CBD-3E4D9892C26A}

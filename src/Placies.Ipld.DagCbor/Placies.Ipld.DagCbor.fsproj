@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="DagCbor.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Placies.Ipld\Placies.Ipld.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="PeterO.Cbor" Version="4.5.2" />
+    </ItemGroup>
+
+</Project>
