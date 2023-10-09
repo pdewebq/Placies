@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Placies.Ipld\Placies.Ipld.fsproj" />
+      <ProjectReference Include="..\Placies.Multiformats\Placies.Multiformats.fsproj" />
     </ItemGroup>
 
     <ItemGroup>

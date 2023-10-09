@@ -6,20 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Include="MultiBase.fs" />
-      <Compile Include="MultiCodec.fs" />
-      <Compile Include="MultiHash.fs" />
-      <Compile Include="Cid.fs" />
       <Compile Include="DataModel.fs" />
       <Compile Include="Codec.fs" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.5" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Placies.Utils\Placies.Utils.fsproj" />
+      <ProjectReference Include="..\Placies.Multiformats\Placies.Multiformats.fsproj" />
     </ItemGroup>
 
 </Project>
