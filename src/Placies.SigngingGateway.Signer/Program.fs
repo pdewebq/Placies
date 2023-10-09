@@ -2,20 +2,19 @@
 
 open System.IO
 open System.Security.Cryptography
-open Ipfs
 open Org.BouncyCastle.Crypto.Parameters
 open Org.BouncyCastle.OpenSsl
 open Org.BouncyCastle.Security
 
 open Placies
+open Placies.Multiformats
 open Placies.Gateway
 open Placies.SigningGateway
 
 [<EntryPoint>]
 let main args =
 
-    MultiCodec.registerMore ()
-    MultiBase.registerMore ()
+    let multibaseProvider = MultiBaseRegistry.CreateDefault()
 
     let importPrivateKey (pem: string) : RSACryptoServiceProvider =
         let pemReader = PemReader(new StringReader(pem))
@@ -31,15 +30,15 @@ let main args =
     let input = args.[1]
     match input with
     | Regex @"^\/ipfs\/(.+)$" [ cidStr ] ->
-        let contentRoot = IpfsContentRoot.Ipfs (Cid.Decode(cidStr))
+        let contentRoot = IpfsContentRoot.Ipfs (cidStr |> Cid.parse multibaseProvider)
         let varsig = SigningContentRoot.signContentRoot contentRoot privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
-        let varsig = MultiBase.Encode(varsig.ToArray(), "base58btc")
+        let varsig = varsig.ToArray() |> MultiBase.encode MultiBaseInfos.Base58Btc
         printfn $"/ipfs/cidv1/{cidStr} varsig: {varsig}"
     | Regex @"^\/ipns\/(.+)$" [ ipnsName ] ->
-        let contentRootIpns = IpfsContentRootIpns.parseIpnsName ipnsName false
+        let contentRootIpns = ipnsName |> IpfsContentRootIpns.parseIpnsName multibaseProvider false
         let contentRoot = IpfsContentRoot.Ipns contentRootIpns
         let varsig = SigningContentRoot.signContentRoot contentRoot privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
-        let varsig = MultiBase.Encode(varsig.ToArray(), "base58btc")
+        let varsig = varsig.ToArray() |> MultiBase.encode MultiBaseInfos.Base58Btc
         match contentRootIpns with
         | IpfsContentRootIpns.Key _ ->
             printfn $"/ipns/libp2p-key/{ipnsName} varsig: {varsig}"

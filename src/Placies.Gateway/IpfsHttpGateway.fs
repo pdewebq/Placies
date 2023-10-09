@@ -6,10 +6,11 @@ open System.Net.Http
 open System.Text
 open FsToolkit.ErrorHandling
 open Microsoft.Extensions.Primitives
+open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Http.Extensions
 open Microsoft.AspNetCore.Http
-open Ipfs
 open Placies
+open Placies.Multiformats
 
 
 [<AutoOpen>]
@@ -42,21 +43,21 @@ type GatewayRequest = {
 [<RequireQualifiedAccess>]
 module GatewayRequest =
 
-    let parsePathToContentRoot (path: PathString) =
+    let parsePathToContentRoot multibaseProvider (path: PathString) =
         // let segments = httpRequest.Path.ToString().Split('/') |> Array.toList
         let segments = ArraySegment(path.ToString().Split('/'))
         match segments with
         // | "" :: "ipfs" :: cidStr :: pathRemainder ->
         | ArraySegment.Cons ("", ArraySegment.Cons ("ipfs", ArraySegment.Cons (cidStr, pathRemainder))) ->
             Some ^ result {
-                let! cid = Result.tryWith (fun () -> Cid.Decode(cidStr)) |> Result.mapError (fun _ex -> "Invalid CID")
+                let! cid = cidStr |> Cid.tryParse multibaseProvider |> Result.mapError (fun err -> $"Invalid CID: {err}")
                 let pathRemainder = String.Join('/', seq { ""; yield! pathRemainder })
                 return IpfsContentRoot.Ipfs cid, pathRemainder
             }
         // | "" :: "ipns" :: ipnsName :: pathRemainder ->
         | ArraySegment.Cons ("", ArraySegment.Cons ("ipns", ArraySegment.Cons (ipnsName, pathRemainder))) ->
             Some ^ result {
-                let ipnsName = IpfsContentRootIpns.parseIpnsName ipnsName true
+                let ipnsName = ipnsName |> IpfsContentRootIpns.parseIpnsName multibaseProvider true
                 let pathRemainder = String.Join('/', seq { ""; yield! pathRemainder })
                 return IpfsContentRoot.Ipns ipnsName, pathRemainder
             }
@@ -66,18 +67,18 @@ module GatewayRequest =
     /// <remarks>
     /// `cid.ipfs.example.tld` => remainder="example.tld"
     /// </remarks>
-    let parseHostToContentRoot (host: string) =
+    let parseHostToContentRoot multibaseProvider (host: string) =
         let hostTokens = host.Split('.') |> Array.toList
         match hostTokens with
         | cidStr :: "ipfs" :: hostRemainder ->
             Some ^ result {
-                let! cid = Result.tryWith (fun () -> Cid.Decode(cidStr)) |> Result.mapError (fun _ex -> "Invalid CID")
+                let! cid = cidStr |> Cid.tryParse multibaseProvider |> Result.mapError (fun err -> $"Invalid CID: {err}")
                 let hostRemainder = String.Join('.', hostRemainder)
                 return IpfsContentRoot.Ipfs cid, hostRemainder
             }
         | ipnsName :: "ipns" :: hostRemainder ->
             Some ^ result {
-                let ipnsName = IpfsContentRootIpns.parseIpnsName ipnsName false
+                let ipnsName = ipnsName |> IpfsContentRootIpns.parseIpnsName multibaseProvider false
                 let hostRemainder = String.Join('.', hostRemainder)
                 return IpfsContentRoot.Ipns ipnsName, hostRemainder
             }
@@ -85,7 +86,8 @@ module GatewayRequest =
             None
 
     let ofHttpRequestPath (httpRequest: HttpRequest) : Result<GatewayRequest, _> option =
-        match parsePathToContentRoot httpRequest.Path with
+        let multibaseProvider = httpRequest.HttpContext.RequestServices.GetRequiredService<IMultiBaseProvider>()
+        match httpRequest.Path |> parsePathToContentRoot multibaseProvider with
         | Some res ->
             Some ^ result {
                 let! contentRoot, pathRemainder = res |> Result.mapError (fun err -> Results.BadRequest(err))
@@ -117,9 +119,10 @@ module GatewayRequest =
             None
 
     let ofHttpRequestSubdomain (httpRequest: HttpRequest) : Result<GatewayRequest, _> option =
+        let multibaseProvider = httpRequest.HttpContext.RequestServices.GetRequiredService<IMultiBaseProvider>()
         let requestHost = httpRequest.Host.Host
         if Uri.CheckHostName(requestHost) = UriHostNameType.Dns then
-            match parseHostToContentRoot requestHost with
+            match requestHost |> parseHostToContentRoot multibaseProvider with
             | Some res ->
                 Some ^ result {
                     let! contentRoot, _hostRemainder = res |> Result.mapError (fun err -> Results.BadRequest(err))

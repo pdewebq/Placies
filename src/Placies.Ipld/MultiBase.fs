@@ -47,7 +47,34 @@ module MultiBase =
 [<RequireQualifiedAccess>]
 module MultiBaseInfos =
 
+    open System.Text
+    open System.Numerics
     open Ipfs
+
+    let encodeAnyBase (baseAlphabet: string) (input: byte array) : string =
+        let mutable number = BigInteger(input)
+        let l = baseAlphabet.Length
+        let result = StringBuilder()
+        while number > BigInteger.Zero do
+            let idx = number % BigInteger(l) |> int
+            if idx >= l then failwith ""
+            result.Append(baseAlphabet.[idx]) |> ignore
+            number <- number / BigInteger(l)
+        result.ToString()
+
+    let decodeAnyBase (baseAlphabet: string) (input: string) : byte array =
+        let mutable result = BigInteger(0)
+        let b = baseAlphabet.Length
+        let mutable pow = 0
+        for c in input.ToCharArray() |> Array.rev |> String do
+            let idx = baseAlphabet.IndexOf(c)
+            if idx = -1 then failwith ""
+            result <- result + BigInteger.Pow(b, pow) * BigInteger(idx)
+            pow <- pow + 1
+        result.ToByteArray(isUnsigned=true, isBigEndian=true)
+
+    let base36Alphabet = "0123456789abcdefghijklmnopqrstuvwxyz"
+
 
     let Base16 = {
         Name = "base16"; PrefixCharacter = 'f'
@@ -56,6 +83,10 @@ module MultiBaseInfos =
     let Base32 = {
         Name = "base32"; PrefixCharacter = 'b'
         BaseEncoder = BaseEncoder.create (fun bytes -> SimpleBase.Base32.Rfc4648.Encode(bytes, false).ToLowerInvariant()) (fun text -> SimpleBase.Base32.Rfc4648.Decode(text))
+    }
+    let Base36 = {
+        Name = "base36"; PrefixCharacter = 'k'
+        BaseEncoder = BaseEncoder.create (fun bytes -> encodeAnyBase base36Alphabet bytes) (fun text -> decodeAnyBase base36Alphabet text)
     }
     let Base58Btc = {
         Name = "base58btc"; PrefixCharacter = 'z'
@@ -93,6 +124,7 @@ type MultiBaseRegistry() =
         let registry = MultiBaseRegistry()
         registry.Register(MultiBaseInfos.Base16) |> ignore
         registry.Register(MultiBaseInfos.Base32) |> ignore
+        registry.Register(MultiBaseInfos.Base36) |> ignore
         registry.Register(MultiBaseInfos.Base58Btc) |> ignore
         registry.Register(MultiBaseInfos.Base64) |> ignore
         registry.Register(MultiBaseInfos.Base64Url) |> ignore

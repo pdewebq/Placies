@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="MultiCodecs.fs" />
         <Compile Include="Library.fs"/>
     </ItemGroup>
 

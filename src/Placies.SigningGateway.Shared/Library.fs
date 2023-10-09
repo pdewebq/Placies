@@ -8,6 +8,7 @@ open FsToolkit.ErrorHandling
 open Ipfs
 open Placies
 open Placies.Gateway
+open Placies.Multiformats
 
 [<RequireQualifiedAccess>]
 module SigningContentRoot =
@@ -15,64 +16,64 @@ module SigningContentRoot =
     let signContentRoot (contentRoot: IpfsContentRoot) (privateKey: RSA) (hashAlg: HashAlgorithmName) (padding: RSASignaturePadding) =
         let stream = new MemoryStream()
         use streamWriter = new BinaryWriter(stream)
-        stream.WriteMultiCodec("varsig")
-        stream.WriteMultiCodec("rsa-pub")
+        stream.WriteVarint(MultiCodecInfos.Varsig.Code)
+        stream.WriteVarint(MultiCodecInfos.RsaPub.Code)
         match hashAlg with
         | Equals HashAlgorithmName.SHA256 ->
-            stream.WriteMultiCodec("sha2-256")
+            stream.WriteVarint(MultiCodecInfos.Sha2_256.Code)
             match contentRoot with
             | IpfsContentRoot.Ipfs cid ->
-                let signingDataBytes = cid.ToArray()
+                let signingDataBytes = cid |> Cid.toByteArray
                 let signatureBytes = privateKey.SignData(signingDataBytes, hashAlg, padding)
                 stream.WriteVarint(signatureBytes.Length)
-                stream.WriteMultiCodec("ipfs")
-                stream.WriteMultiCodec("cidv1")
+                stream.WriteVarint(MultiCodecInfos.Ipfs.Code)
+                stream.WriteVarint(MultiCodecInfos.Cidv1.Code)
                 streamWriter.Write(signatureBytes)
             | IpfsContentRoot.Ipns (IpfsContentRootIpns.Key libp2pKey) ->
-                let signingDataBytes = libp2pKey.ToArray()
+                let signingDataBytes = libp2pKey |> Cid.toByteArray
                 let signatureBytes = privateKey.SignData(signingDataBytes, hashAlg, padding)
                 stream.WriteVarint(signatureBytes.Length)
-                stream.WriteMultiCodec("ipns")
-                stream.WriteMultiCodec("libp2p-key")
+                stream.WriteVarint(MultiCodecInfos.Ipns.Code)
+                stream.WriteVarint(MultiCodecInfos.Libp2pKey.Code)
                 streamWriter.Write(signatureBytes)
             | IpfsContentRoot.Ipns (IpfsContentRootIpns.DnsName dnsName) ->
                 let signingDataBytes = Encoding.UTF8.GetBytes(dnsName)
                 let signatureBytes = privateKey.SignData(signingDataBytes, hashAlg, padding)
                 stream.WriteVarint(signatureBytes.Length)
-                stream.WriteMultiCodec("ipns")
-                stream.WriteMultiCodec("dns")
+                stream.WriteVarint(MultiCodecInfos.Ipns.Code)
+                stream.WriteVarint(MultiCodecInfos.Dns.Code)
                 streamWriter.Write(signatureBytes)
         | _ ->
             invalidOp $"Not supported hash algorithm: {hashAlg}"
         stream
 
-    let verifyVarsigSignature (contentRoot: IpfsContentRoot) (publicKey: RSA) (varsigStr: string) = result {
-        let varsigBytes = MultiBase.Decode(varsigStr)
+    let verifyVarsigSignature (multibaseProvider: IMultiBaseProvider) (contentRoot: IpfsContentRoot) (publicKey: RSA) (varsigStr: string) = result {
+        let varsigBytes = MultiBase.tryDecode multibaseProvider varsigStr |> Result.getOk
         use stream = new MemoryStream(varsigBytes)
-        let varsigCodec = stream.ReadMultiCodec()
-        do! Result.requireEqual varsigCodec.Name "varsig" $"{varsigCodec.Name} is not varsig"
-        let varsigHeaderCodec = stream.ReadMultiCodec()
-        match varsigHeaderCodec.Name with
-        | "rsa-pub" ->
-            let rsaHashAlgorithmCodec = stream.ReadMultiCodec()
-            match rsaHashAlgorithmCodec.Name with
-            | "sha2-256" ->
+        let varsigCode = stream.ReadVarint32()
+        do! Result.requireEqual varsigCode MultiCodecInfos.Varsig.Code $"{varsigCode} is not varsig"
+        let varsigHeaderCode = stream.ReadVarint32()
+        match varsigHeaderCode with
+        | Equals MultiCodecInfos.RsaPub.Code ->
+            let rsaHashAlgorithmCode = stream.ReadVarint32()
+            match rsaHashAlgorithmCode with
+            | Equals MultiCodecInfos.Sha2_256.Code ->
                 let signatureByteLength = stream.ReadVarint32()
                 let readSigningDataBytes (stream: Stream) = result {
                     match contentRoot with
                     | IpfsContentRoot.Ipfs cid ->
-                        do! stream.ReadMultiCodec().Name = "ipfs" |> Result.requireTrue "Signature is not for /ipfs"
-                        do! stream.ReadMultiCodec().Name = "cidv1" |> Result.requireTrue "Signature is not for /ipfs/cidv1"
-                        let cidBytes = cid.ToArray()
+                        do! stream.ReadVarint32() = MultiCodecInfos.Ipfs.Code |> Result.requireTrue "Signature is not for /ipfs"
+                        do! stream.ReadVarint32() = MultiCodecInfos.Cidv1.Code |> Result.requireTrue "Signature is not for /ipfs/cidv1"
+                        let cidBytes = cid |> Cid.toByteArray
                         return cidBytes
                     | IpfsContentRoot.Ipns (IpfsContentRootIpns.Key libp2pKey) ->
-                        do! stream.ReadMultiCodec().Name = "ipns" |> Result.requireTrue "Signature is not for /ipns"
-                        do! stream.ReadMultiCodec().Name = "libp2p-key" |> Result.requireTrue "Signature is not for /ipns/libp2p-key"
-                        let libp2pKeyBytes = libp2pKey.ToArray()
+                        do! stream.ReadVarint32() = MultiCodecInfos.Ipns.Code |> Result.requireTrue "Signature is not for /ipns"
+                        do! stream.ReadVarint32() = MultiCodecInfos.Libp2pKey.Code |> Result.requireTrue "Signature is not for /ipns/libp2p-key"
+                        let libp2pKeyBytes = libp2pKey |> Cid.toByteArray
                         return libp2pKeyBytes
                     | IpfsContentRoot.Ipns (IpfsContentRootIpns.DnsName dnsName) ->
-                        do! stream.ReadMultiCodec().Name = "ipns" |> Result.requireTrue "Signature is not for /ipns"
-                        do! stream.ReadMultiCodec().Name = "dns" |> Result.requireTrue "Signature is not for /ipns/dns"
+                        do! stream.ReadVarint32() = MultiCodecInfos.Ipns.Code |> Result.requireTrue "Signature is not for /ipns"
+                        do! stream.ReadVarint32() = MultiCodecInfos.Dns.Code |> Result.requireTrue "Signature is not for /ipns/dns"
                         let dnsNameBytes = Encoding.UTF8.GetBytes(dnsName)
                         return dnsNameBytes
                 }
@@ -82,7 +83,7 @@ module SigningContentRoot =
                 let isValid = publicKey.VerifyData(signingDataBytes, signatureBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1)
                 return isValid
             | _ ->
-                return! Error $"Not supported hash algorithm: {rsaHashAlgorithmCodec.Name}"
+                return! Error $"Not supported hash algorithm: {rsaHashAlgorithmCode}"
         | _ ->
-            return! Error $"Not supported signature header: {varsigHeaderCodec.Name}"
+            return! Error $"Not supported signature header: {varsigHeaderCode}"
     }

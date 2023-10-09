@@ -21,6 +21,7 @@ open Org.BouncyCastle.OpenSsl
 open Org.BouncyCastle.Security
 
 open Placies
+open Placies.Multiformats
 open Placies.Gateway
 open Placies.SigningGateway
 
@@ -28,10 +29,9 @@ open Placies.SigningGateway
 [<EntryPoint>]
 let main args =
 
-    MultiCodec.registerMore ()
-    MultiBase.registerMore ()
-
     let builder = WebApplication.CreateBuilder(args)
+
+    builder.Services.AddSingleton<IMultiBaseProvider, _>(fun _services -> MultiBaseRegistry.CreateDefault()) |> ignore
 
     // TODO: Check that this address is only host
     let proxiedGatewayAddress = Uri(builder.Configuration.["ProxiedGateway:Address"])
@@ -89,8 +89,13 @@ let main args =
                     let! gatewayRequest = gatewayRequest
                     app.Logger.LogInformation("Requesting {@GatewayRequest}", gatewayRequest)
 
+                    let multibaseProvider = ctx.RequestServices.GetRequiredService<IMultiBaseProvider>()
+
                     let! varsigStr = tryGetVarsig ctx.Request gatewayRequest.ContentRoot
-                    let! isValid = SigningContentRoot.verifyVarsigSignature gatewayRequest.ContentRoot publicKey varsigStr |> Result.mapError (fun err -> Results.BadRequest(err))
+                    let! isValid =
+                        varsigStr
+                        |> SigningContentRoot.verifyVarsigSignature multibaseProvider gatewayRequest.ContentRoot publicKey
+                        |> Result.mapError (fun err -> Results.BadRequest(err))
                     do! if not isValid then Result.Error (Results.Unauthorized("Signature is not verified")) else Ok ()
                     app.Logger.LogInformation("Valid")
 
@@ -105,13 +110,13 @@ let main args =
                                 let locationUri = Uri(locationValue, UriKind.RelativeOrAbsolute)
                                 if locationUri.IsAbsoluteUri then
                                     let originHostWithoutSubdomainIpfs (requestHost: string) =
-                                        match GatewayRequest.parseHostToContentRoot requestHost with
+                                        match requestHost |> GatewayRequest.parseHostToContentRoot multibaseProvider with
                                         | Some res ->
                                             let _, hostRemainder = res |> Result.getOk
                                             hostRemainder
                                         | None ->
                                             requestHost
-                                    match GatewayRequest.parseHostToContentRoot locationUri.Host with
+                                    match locationUri.Host |> GatewayRequest.parseHostToContentRoot multibaseProvider with
                                     | Some res ->
                                         let contentRoot, _ = res |> Result.getOk
                                         let uriBuilder = UriBuilder(locationUri)
@@ -121,7 +126,7 @@ let main args =
                                         IpfsContentRoot.appendToUriSubdomain uriBuilder contentRoot
                                         uriBuilder.Uri.ToString()
                                     | None ->
-                                        match GatewayRequest.parsePathToContentRoot (PathString(locationUri.AbsolutePath)) with
+                                        match PathString(locationUri.AbsolutePath) |> GatewayRequest.parsePathToContentRoot multibaseProvider  with
                                         | Some _ ->
                                             let uriBuilder = UriBuilder(locationUri)
                                             uriBuilder.Scheme <- requestUri.Scheme

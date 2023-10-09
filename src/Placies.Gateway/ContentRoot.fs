@@ -1,8 +1,8 @@
 namespace Placies.Gateway
 
 open FsToolkit.ErrorHandling
-open Ipfs
 open Placies
+open Placies.Multiformats
 
 [<RequireQualifiedAccess>]
 type IpfsContentRootIpns =
@@ -16,14 +16,14 @@ module IpfsContentRootIpns =
         // TODO: Do it without a crutchy intermediate symbol
         dnsName.Replace("--", "$").Replace('-', '.').Replace('$', '-')
 
-    let parseLibp2pKey (input: string) = result {
-        let! cidOfLibp2pKey = Result.tryWith (fun () -> Cid.Decode(input)) |> Result.mapError (fun ex -> $"Not CID: {ex}")
-        do! (cidOfLibp2pKey.ContentType = "libp2p-key") |> Result.requireTrue "Not libp2p-key"
+    let parseLibp2pKey multibaseProvider (input: string) = result {
+        let! cidOfLibp2pKey = input |> Cid.tryParse multibaseProvider |> Result.mapError (fun err -> $"Not CID: {err}")
+        do! (cidOfLibp2pKey.ContentTypeCode = MultiCodecInfos.Libp2pKey.Code) |> Result.requireTrue "Not libp2p-key"
         return cidOfLibp2pKey
     }
 
-    let parseIpnsName (ipnsName: string) (shouldUnescapeDnsName: bool) : IpfsContentRootIpns =
-        let cidOfLibp2pKey = parseLibp2pKey ipnsName
+    let parseIpnsName multibaseProvider (shouldUnescapeDnsName: bool) (ipnsName: string) : IpfsContentRootIpns =
+        let cidOfLibp2pKey = ipnsName |> parseLibp2pKey multibaseProvider
         match cidOfLibp2pKey with
         | Ok cidOfLibp2pKey ->
             IpfsContentRootIpns.Key cidOfLibp2pKey
