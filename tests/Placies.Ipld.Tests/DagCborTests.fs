@@ -12,9 +12,9 @@ open Placies.Ipld.DagCbor
 
 type DagCborTests(output: ITestOutputHelper) =
 
-    static member GetFixtures(): TheoryData<Fixture> =
+    static member GetDagCborFixtures(): TheoryData<CodecFixture> =
         TheoryData<_>() {
-            yield! IpldFixtures.read ()
+            yield! IpldFixtures.readCodecFixtures MultiCodecInfos.DagCbor.Name
         }
 
     static member FixturesToSkip = readOnlyDict [
@@ -24,45 +24,35 @@ type DagCborTests(output: ITestOutputHelper) =
     ]
 
     [<SkippableTheory>]
-    [<MemberData("GetFixtures")>]
-    member _.``Test fixtures reencoding``(fixture: Fixture): unit =
+    [<MemberData("GetDagCborFixtures")>]
+    member _.``Test fixtures reencoding``(fixture: CodecFixture): unit =
         output.WriteLine($"Fixture '%s{fixture.Name}'")
         ( let condition, reason = DagCborTests.FixturesToSkip.TryGetValue(fixture.Name)
           Skip.If(condition, reason) )
 
         let dagCborCodec = DagCborCodec()
-        for fixtureEntry in fixture.Entries do
-            match fixtureEntry.CodecName with
-            | "dag-cbor" ->
-                output.WriteLine("Fixture bytes:")
-                output.WriteLine(fixtureEntry.DataBytes.ToHexString())
-                output.WriteLine("")
-                output.WriteLine($"Fixture CID: {fixtureEntry.Cid}")
-                output.WriteLine("")
-                output.WriteLine("")
 
-                use dataStream = new MemoryStream(fixtureEntry.DataBytes)
-                let dataModelNode = (dagCborCodec :> ICodec).Decode(dataStream) |> Result.getOk
+        output.WriteLine("Fixture bytes:")
+        output.WriteLine(fixture.DataBytes.ToHexString())
+        output.WriteLine("")
+        output.WriteLine($"Fixture CID: {fixture.Cid}")
+        output.WriteLine("")
+        output.WriteLine("")
 
-                output.WriteLine("Decoded DataModel node:")
-                output.WriteLine($"%A{dataModelNode}")
-                output.WriteLine("")
+        use dataStream = new MemoryStream(fixture.DataBytes)
+        let dataModelNode = (dagCborCodec :> ICodec).Decode(dataStream) |> Result.getOk
 
-                use reencodedDataStream = new MemoryStream()
-                let reencodedCid = Codec.encodeWithCid dagCborCodec 1 MultiHashInfos.Sha2_256 dataModelNode reencodedDataStream
-                let reencodedDataBytes = reencodedDataStream.ToArray()
+        output.WriteLine("Decoded DataModel node:")
+        output.WriteLine($"%A{dataModelNode}")
+        output.WriteLine("")
 
-                output.WriteLine("Reencoded bytes:")
-                output.WriteLine(reencodedDataBytes.ToHexString())
-                output.WriteLine("")
-                output.WriteLine($"Reencoded CID: {reencodedCid}")
+        use reencodedDataStream = new MemoryStream()
+        let reencodedCid = Codec.encodeWithCid dagCborCodec 1 MultiHashInfos.Sha2_256 dataModelNode reencodedDataStream
+        let reencodedDataBytes = reencodedDataStream.ToArray()
 
-                test <@ Cid.encode fixtureEntry.Cid = Cid.encode reencodedCid @>
-            | "dag-json" ->
-                // TODO: Implement
-                ()
-            | "dag-pb" ->
-                // TODO: Implement
-                ()
-            | _ ->
-                failwith $"Not supported codec: {fixtureEntry.CodecName}"
+        output.WriteLine("Reencoded bytes:")
+        output.WriteLine(reencodedDataBytes.ToHexString())
+        output.WriteLine("")
+        output.WriteLine($"Reencoded CID: {reencodedCid}")
+
+        test <@ Cid.encode fixture.Cid = Cid.encode reencodedCid @>

@@ -15,6 +15,13 @@ type Fixture = {
     Entries: FixtureEntry list
 }
 
+type CodecFixture = {
+    Name: string
+    Cid: Cid
+    DataBytes: byte array
+}
+
+[<RequireQualifiedAccess>]
 module IpldFixtures =
 
     let read () = seq {
@@ -34,4 +41,15 @@ module IpldFixtures =
             ]
             { Name = fixtureName
               Entries = entries }
+    }
+
+    let readCodecFixtures (codecName: string) = seq {
+        for fixture in read () do
+            for fixtureEntry in fixture.Entries do
+                if fixtureEntry.CodecName = codecName then
+                    yield {
+                        Name = fixture.Name
+                        Cid = fixtureEntry.Cid
+                        DataBytes = fixtureEntry.DataBytes
+                    }
     }

@@ -16,9 +16,9 @@ type DagJsonTests(output: ITestOutputHelper) =
 
     static do DagJsonCodec.AddShipyardMulticodec()
 
-    static member GetFixtures(): TheoryData<Fixture> =
+    static member GetDagJsonFixtures(): TheoryData<CodecFixture> =
         TheoryData<_>() {
-            yield! IpldFixtures.read ()
+            yield! IpldFixtures.readCodecFixtures MultiCodecInfos.DagJson.Name
         }
 
     static member FixturesToSkip = readOnlyDict [
@@ -33,51 +33,41 @@ type DagJsonTests(output: ITestOutputHelper) =
     ]
 
     [<SkippableTheory>]
-    [<MemberData("GetFixtures")>]
-    member _.``Test fixtures reencoding``(fixture: Fixture): unit =
+    [<MemberData("GetDagJsonFixtures")>]
+    member _.``Test fixtures reencoding``(fixture: CodecFixture): unit =
+        output.WriteLine($"Fixture '%s{fixture.Name}'")
         ( let condition, reason = DagJsonTests.FixturesToSkip.TryGetValue(fixture.Name)
           Skip.If(condition, reason) )
 
-        output.WriteLine($"Fixture '%s{fixture.Name}'")
         let dagJsonCodec = DagJsonCodec(MultiBaseRegistry.CreateDefault())
-        for fixtureEntry in fixture.Entries do
-            match fixtureEntry.CodecName with
-            | "dag-json" ->
-                output.WriteLine("Fixture bytes:")
-                output.WriteLine(fixtureEntry.DataBytes.ToHexString())
-                output.WriteLine("")
-                output.WriteLine("Fixture text:")
-                output.WriteLine(Encoding.UTF8.GetString(fixtureEntry.DataBytes))
-                output.WriteLine("")
-                output.WriteLine($"Fixture CID: {fixtureEntry.Cid}")
-                output.WriteLine("")
-                output.WriteLine("")
 
-                use dataStream = new MemoryStream(fixtureEntry.DataBytes)
-                let dataModelNode = (dagJsonCodec :> ICodec).Decode(dataStream) |> Result.getOk
+        output.WriteLine("Fixture bytes:")
+        output.WriteLine(fixture.DataBytes.ToHexString())
+        output.WriteLine("")
+        output.WriteLine("Fixture text:")
+        output.WriteLine(Encoding.UTF8.GetString(fixture.DataBytes))
+        output.WriteLine("")
+        output.WriteLine($"Fixture CID: {fixture.Cid}")
+        output.WriteLine("")
+        output.WriteLine("")
 
-                output.WriteLine("Decoded DataModel node:")
-                output.WriteLine($"%A{dataModelNode}")
-                output.WriteLine("")
+        use dataStream = new MemoryStream(fixture.DataBytes)
+        let dataModelNode = (dagJsonCodec :> ICodec).Decode(dataStream) |> Result.getOk
 
-                use reencodedDataStream = new MemoryStream()
-                let reencodedCid = Codec.encodeWithCid dagJsonCodec 1 MultiHashInfos.Sha2_256 dataModelNode reencodedDataStream
-                let reencodedDataBytes = reencodedDataStream.ToArray()
+        output.WriteLine("Decoded DataModel node:")
+        output.WriteLine($"%A{dataModelNode}")
+        output.WriteLine("")
 
-                output.WriteLine("Reencoded bytes:")
-                output.WriteLine(reencodedDataBytes.ToHexString())
-                output.WriteLine("")
-                output.WriteLine("Reencoded text:")
-                output.WriteLine(Encoding.UTF8.GetString(reencodedDataBytes))
-                output.WriteLine("")
-                output.WriteLine($"Reencoded CID: {reencodedCid}")
+        use reencodedDataStream = new MemoryStream()
+        let reencodedCid = Codec.encodeWithCid dagJsonCodec 1 MultiHashInfos.Sha2_256 dataModelNode reencodedDataStream
+        let reencodedDataBytes = reencodedDataStream.ToArray()
 
-                test <@ Cid.encode fixtureEntry.Cid = Cid.encode reencodedCid @>
-            | "dag-cbor" ->
-                // TODO: Implement
-                ()
-            | "dag-pb" ->
-                // TODO: Implement
-                ()
-            | _ ->
-                failwith $"Not supported codec: {fixtureEntry.CodecName}"
+        output.WriteLine("Reencoded bytes:")
+        output.WriteLine(reencodedDataBytes.ToHexString())
+        output.WriteLine("")
+        output.WriteLine("Reencoded text:")
+        output.WriteLine(Encoding.UTF8.GetString(reencodedDataBytes))
+        output.WriteLine("")
+        output.WriteLine($"Reencoded CID: {reencodedCid}")
+
+        test <@ Cid.encode fixture.Cid = Cid.encode reencodedCid @>
