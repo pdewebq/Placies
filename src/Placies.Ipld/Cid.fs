@@ -28,7 +28,7 @@ module Cid =
     let encode (cid: Cid) : string =
         cid.ToString()
 
-    let tryParse (input: string) : Result<Cid, string> = result {
+    let tryParse (multibaseProvider: IMultiBaseProvider) (input: string) : Result<Cid, string> = result {
         if input.Length = 46 && input.StartsWith("Qm") then
             let! multiHash = MultiHash.parseBase58String input |> Result.mapError string
             return {
@@ -37,7 +37,7 @@ module Cid =
                 MultiHash = multiHash
             }
         else
-            let! bytes = Result.tryWith (fun () -> MultiBase.Decode(input)) |> Result.mapError string
+            let! bytes = MultiBase.tryDecode multibaseProvider input
             use stream = new MemoryStream(bytes)
             do! stream.ReadVarint32() |> Result.requireEqualTo 1 "Unknown CID version"
             return {
@@ -47,8 +47,8 @@ module Cid =
             }
     }
 
-    let parse (input: string) : Cid =
-        tryParse input |> Result.getOk
+    let parse (multibaseProvider: IMultiBaseProvider) (input: string) : Cid =
+        tryParse multibaseProvider input |> Result.getOk
 
     let writeToStream (stream: Stream) (cid: Cid) : unit =
         if cid.Version = 0 then
@@ -79,4 +79,4 @@ type Cid with
             this.MultiHash |> MultiHash.toBase58String
         else
             let bytes = this |> Cid.toByteArray
-            MultiBase.Encode(bytes, MultiBaseInfos.Base32.Name)
+            bytes |> MultiBase.encode MultiBaseInfos.Base32

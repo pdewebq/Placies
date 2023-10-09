@@ -39,7 +39,7 @@ type DagJsonTests(output: ITestOutputHelper) =
           Skip.If(condition, reason) )
 
         output.WriteLine($"Fixture '%s{fixture.Name}'")
-        let dagJsonCodec = DagJsonCodec()
+        let dagJsonCodec = DagJsonCodec(MultiBaseRegistry.CreateDefault())
         for fixtureEntry in fixture.Entries do
             match fixtureEntry.CodecName with
             | "dag-json" ->
@@ -71,7 +71,7 @@ type DagJsonTests(output: ITestOutputHelper) =
                 output.WriteLine(Encoding.UTF8.GetString(reencodedDataBytes))
                 output.WriteLine("")
 
-                let reencodedMultiHash = MultiHash.computeFromBytes reencodedDataBytes "sha2-256"
+                let reencodedMultiHash = MultiHash.computeFromBytes reencodedDataBytes MultiHashInfos.Sha2_256
                 let reencodedCid = Cid.create 1 (dagJsonCodec :> ICodec).CodecInfo.Code reencodedMultiHash
                 output.WriteLine($"Reencoded CID: {reencodedCid}")
 

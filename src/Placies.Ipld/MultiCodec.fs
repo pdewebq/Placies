@@ -26,11 +26,21 @@ type IMultiCodecProvider =
 type MultiCodecRegistry() =
     let registryOfName = Dictionary<string, MultiCodecInfo>()
     let registryOfCode = Dictionary<int, MultiCodecInfo>()
+
     member _.Register(codecInfo: MultiCodecInfo): bool =
-        registryOfCode.TryAdd(codecInfo.Code, codecInfo) |> ignore
-        registryOfName.TryAdd(codecInfo.Name, codecInfo)
+        registryOfCode.TryAdd(codecInfo.Code, codecInfo)
+        && registryOfName.TryAdd(codecInfo.Name, codecInfo)
+
     interface IMultiCodecProvider with
         member _.TryGetByCode(code: int): MultiCodecInfo option =
             registryOfCode.TryGetValue(code) |> Option.ofTryByref
         member _.TryGetByName(name: string): MultiCodecInfo option =
             registryOfName.TryGetValue(name) |> Option.ofTryByref
+
+    static member CreateDefault(): MultiCodecRegistry =
+        let registry = MultiCodecRegistry()
+        registry.Register(MultiCodecInfos.Sha2_256) |> ignore
+        registry.Register(MultiCodecInfos.DagPb) |> ignore
+        registry.Register(MultiCodecInfos.DagCbor) |> ignore
+        registry.Register(MultiCodecInfos.DagJson) |> ignore
+        registry

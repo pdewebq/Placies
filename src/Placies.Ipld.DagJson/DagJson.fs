@@ -1,6 +1,5 @@
 namespace Placies.Ipld.DagJson
 
-open System
 open System.Collections.Generic
 open System.Text.Json
 open System.Text.Json.Nodes
@@ -8,19 +7,6 @@ open FsToolkit.ErrorHandling
 open Placies
 open Placies.Multiformats
 open Placies.Ipld
-
-[<AutoOpen>]
-module ConvertExtensions =
-    type Convert with
-        static member ToBase64StringNoPadding(inArray: byte array): string =
-            Convert.ToBase64String(inArray).TrimEnd('=')
-        static member FromBase64StringNoPadding(s: string): byte array =
-            let s =
-                match s.Length % 4 with
-                | 2 -> s + "=="
-                | 3 -> s + "="
-                | _ -> s
-            Convert.FromBase64String(s)
 
 [<RequireQualifiedAccess>]
 module DagJson =
@@ -39,7 +25,7 @@ module DagJson =
                     JsonObject([
                         KeyValuePair(
                             "bytes",
-                            JsonValue.Create(Convert.ToBase64StringNoPadding(bytes)) :> JsonNode
+                            JsonValue.Create(MultiBaseInfos.Base64.BaseEncoder.Encode(bytes)) :> JsonNode
                         )
                     ]) :> JsonNode
                 )
@@ -63,7 +49,8 @@ module DagJson =
                 )
             ])
 
-    let rec tryDecode (jsonNode: JsonNode) : Result<DataModelNode, string> =
+    let rec tryDecode (multibaseProvider: IMultiBaseProvider) (jsonNode: JsonNode) : Result<DataModelNode, string> =
+        let tryDecode = tryDecode multibaseProvider
         match jsonNode with
         | null ->
             Ok DataModelNode.Null
@@ -82,7 +69,7 @@ module DagJson =
                 | :? JsonValue as slashJsonValue ->
                     result {
                         let! cidStr = slashJsonValue.TryGetValue<string>() |> Option.ofTryByref |> Result.requireSome "Scalar is not a string"
-                        let! cid = Cid.tryParse cidStr |> Result.mapError (fun ex -> $"Invalid CID: {ex}")
+                        let! cid = Cid.tryParse multibaseProvider cidStr |> Result.mapError (fun ex -> $"Invalid CID: {ex}")
                         return DataModelNode.Link cid
                     }
                 | :? JsonObject as slashJsonObject ->
@@ -90,7 +77,7 @@ module DagJson =
                         let! bytesJsonNode = slashJsonObject.TryGetPropertyValue("bytes") |> Option.ofTryByref |> Result.requireSome "Object does not contain 'bytes' field"
                         let! bytesJsonValue = bytesJsonNode |> tryUnbox<JsonValue> |> Result.requireSome "Is not JsonValue"
                         let! bytesString = bytesJsonValue.TryGetValue<string>() |> Option.ofTryByref |> Result.requireSome "Is not string"
-                        let! bytes = Result.tryWith (fun () -> Convert.FromBase64StringNoPadding(bytesString)) |> Result.mapError (fun ex -> $"Invalid Base64: {ex}")
+                        let! bytes = Result.tryWith (fun () -> MultiBaseInfos.Base64.BaseEncoder.Decode(bytesString)) |> Result.mapError (fun ex -> $"Invalid Base64: {ex}")
                         return DataModelNode.Bytes bytes
                     }
                 | _ ->
@@ -109,7 +96,7 @@ module DagJson =
         | _ ->
             Error $"Invalid JsonNode: %A{jsonNode}"
 
-type DagJsonCodec() =
+type DagJsonCodec(multibaseProvider: IMultiBaseProvider) =
     static let mutable isCodecAdded = false
     static member AddShipyardMulticodec() =
         if not isCodecAdded then
@@ -131,4 +118,4 @@ type DagJsonCodec() =
 
         member this.Decode(stream) =
             let jsonNode = JsonSerializer.Deserialize<JsonNode>(stream)
-            DagJson.tryDecode jsonNode |> Result.mapError exn
+            DagJson.tryDecode multibaseProvider jsonNode |> Result.mapError exn

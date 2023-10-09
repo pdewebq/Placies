@@ -56,7 +56,7 @@ type DagCborTests(output: ITestOutputHelper) =
                 output.WriteLine(reencodedDataBytes.ToHexString())
                 output.WriteLine("")
 
-                let reencodedMultiHash = MultiHash.computeFromBytes reencodedDataBytes "sha2-256"
+                let reencodedMultiHash = MultiHash.computeFromBytes reencodedDataBytes MultiHashInfos.Sha2_256
                 let reencodedCid = Cid.create 1 (dagCborCodec :> ICodec).CodecInfo.Code reencodedMultiHash
                 output.WriteLine($"Reencoded CID: {reencodedCid}")
 

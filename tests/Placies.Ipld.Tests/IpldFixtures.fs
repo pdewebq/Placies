@@ -2,6 +2,7 @@ namespace Placies.Ipld.Tests
 
 open System.IO
 open Placies
+open Placies.Multiformats
 
 type FixtureEntry = {
     CodecName: string
@@ -17,6 +18,7 @@ type Fixture = {
 module IpldFixtures =
 
     let read () = seq {
+        let multibaseProvider = MultiBaseRegistry.CreateDefault()
         for fixtureDir in Directory.EnumerateDirectories("./codec-fixtures/fixtures") do
             let fixtureName = Path.GetFileName(fixtureDir)
             let entries = [
@@ -26,7 +28,7 @@ module IpldFixtures =
                     let data = File.ReadAllBytes(fixtureFile)
                     yield {
                         CodecName = codecName
-                        Cid = Cid.parse cidStr
+                        Cid = Cid.parse multibaseProvider cidStr
                         DataBytes = data
                     }
             ]
