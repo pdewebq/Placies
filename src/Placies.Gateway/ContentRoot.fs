@@ -32,6 +32,7 @@ module IpfsContentRootIpns =
             IpfsContentRootIpns.DnsName dnsName
 
 
+[<RequireQualifiedAccess>]
 type IpfsContentRoot =
     | Ipfs of cid: Cid
     | Ipns of IpfsContentRootIpns
@@ -41,9 +42,9 @@ module IpfsContentRoot =
 
     let toNamespaceAndValue (contentRoot: IpfsContentRoot) : string * string =
         match contentRoot with
-        | Ipfs cid ->
+        | IpfsContentRoot.Ipfs cid ->
             "ipfs", cid.ToString()
-        | Ipns ipnsAddress ->
+        | IpfsContentRoot.Ipns ipnsAddress ->
             let ipnsValue =
                 match ipnsAddress with
                 | IpfsContentRootIpns.Key libp2PKey -> libp2PKey.ToString()
