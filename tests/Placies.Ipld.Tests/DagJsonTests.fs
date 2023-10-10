@@ -2,7 +2,6 @@ module Placies.Ipld.Tests.DagJsonTests
 
 open System.IO
 open System.Text
-open Ipfs
 open Xunit
 open Xunit.Abstractions
 open Swensen.Unquote
@@ -13,8 +12,6 @@ open Placies.Ipld
 open Placies.Ipld.DagJson
 
 type DagJsonTests(output: ITestOutputHelper) =
-
-    static do DagJsonCodec.AddShipyardMulticodec()
 
     static member GetDagJsonFixtures(): TheoryData<CodecFixture> =
         TheoryData<_>() {

@@ -49,7 +49,6 @@ module MultiBaseInfos =
 
     open System.Text
     open System.Numerics
-    open Ipfs
 
     let encodeAnyBase (baseAlphabet: string) (input: byte array) : string =
         let mutable number = BigInteger(input)
@@ -78,7 +77,7 @@ module MultiBaseInfos =
 
     let Base16 = {
         Name = "base16"; PrefixCharacter = 'f'
-        BaseEncoder = BaseEncoder.create (fun bytes -> SimpleBase.Base16.EncodeLower(bytes)) (fun text -> SimpleBase.Base16.Decode(text))
+        BaseEncoder = BaseEncoder.create (fun bytes -> SimpleBase.Base16.LowerCase.Encode(bytes)) (fun text -> SimpleBase.Base16.LowerCase.Decode(text))
     }
     let Base32 = {
         Name = "base32"; PrefixCharacter = 'b'
@@ -94,7 +93,7 @@ module MultiBaseInfos =
     }
     let Base64 = {
         Name = "base64"; PrefixCharacter = 'm'
-        BaseEncoder = BaseEncoder.create (fun bytes -> bytes.ToBase64NoPad()) (fun text -> text.FromBase64NoPad())
+        BaseEncoder = BaseEncoder.create (fun bytes -> Convert.ToBase64StringNoPad(bytes)) (fun text -> Convert.FromBase64StringNoPad(text))
     }
     let Base64Pad = {
         Name = "base64pad"; PrefixCharacter = 'M'
@@ -102,7 +101,7 @@ module MultiBaseInfos =
     }
     let Base64Url = {
         Name = "base64url"; PrefixCharacter = 'u'
-        BaseEncoder = BaseEncoder.create (fun bytes -> bytes.ToBase64Url()) (fun text -> text.FromBase64Url())
+        BaseEncoder = BaseEncoder.create (fun bytes -> Convert.ToBase64StringUrl(bytes)) (fun text -> Convert.FromBase64StringUrl(text))
     }
 
 

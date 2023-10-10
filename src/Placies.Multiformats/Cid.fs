@@ -4,10 +4,7 @@ namespace Placies
 
 open System.IO
 open FsToolkit.ErrorHandling
-open Ipfs
 open Placies.Multiformats
-
-type ShipyardCid = Ipfs.Cid
 
 [<StructuredFormatDisplay("{DisplayText}")>]
 type Cid = {

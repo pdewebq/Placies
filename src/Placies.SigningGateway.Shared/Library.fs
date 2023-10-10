@@ -5,7 +5,6 @@ open System.IO
 open System.Security.Cryptography
 open System.Text
 open FsToolkit.ErrorHandling
-open Ipfs
 open Placies
 open Placies.Gateway
 open Placies.Multiformats

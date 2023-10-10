@@ -12,10 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.5" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Placies.Multiformats\Placies.Multiformats.fsproj" />
     </ItemGroup>
 

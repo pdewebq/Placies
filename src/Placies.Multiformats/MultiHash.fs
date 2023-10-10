@@ -4,7 +4,6 @@ open System
 open System.Collections.Generic
 open System.IO
 open System.Security.Cryptography
-open Ipfs
 open Placies
 
 type MultiHashInfo = {

@@ -97,13 +97,6 @@ module DagJson =
             Error $"Invalid JsonNode: %A{jsonNode}"
 
 type DagJsonCodec(multibaseProvider: IMultiBaseProvider) =
-    static let mutable isCodecAdded = false
-    static member AddShipyardMulticodec() =
-        if not isCodecAdded then
-            let dagJson = MultiCodecInfos.DagJson
-            Ipfs.Registry.Codec.Register(dagJson.Name, dagJson.Code) |> ignore
-            isCodecAdded <- true
-
     interface ICodec with
         member _.CodecInfo = MultiCodecInfos.DagJson
 

@@ -1,7 +1,6 @@
 module Placies.Ipld.Tests.DagCborTests
 
 open System.IO
-open Ipfs
 open Xunit
 open Xunit.Abstractions
 open Swensen.Unquote
