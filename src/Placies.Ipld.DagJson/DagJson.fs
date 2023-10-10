@@ -11,15 +11,15 @@ open Placies.Ipld
 [<RequireQualifiedAccess>]
 module DagJson =
 
-    let rec encode (node: DataModelNode) : JsonNode =
+    let rec tryEncode (node: DataModelNode) : Result<JsonNode, string> = result {
         match node with
-        | DataModelNode.Null -> null
-        | DataModelNode.Boolean b -> JsonValue.Create(b)
-        | DataModelNode.Integer i -> JsonValue.Create(i)
-        | DataModelNode.Float f -> JsonValue.Create(f)
-        | DataModelNode.String s -> JsonValue.Create(s)
+        | DataModelNode.Null -> return (null: JsonNode)
+        | DataModelNode.Boolean b -> return JsonValue.Create(b)
+        | DataModelNode.Integer i -> return JsonValue.Create(i)
+        | DataModelNode.Float f -> return JsonValue.Create(f)
+        | DataModelNode.String s -> return JsonValue.Create(s)
         | DataModelNode.Bytes bytes ->
-            JsonObject([
+            return JsonObject([
                 KeyValuePair(
                     "/",
                     JsonObject([
@@ -31,23 +31,26 @@ module DagJson =
                 )
             ])
         | DataModelNode.List list ->
-            JsonArray(
-                list |> Seq.map encode |> Seq.toArray
-            )
+            let! jsonElems = list |> List.traverseResultM tryEncode
+            return JsonArray(jsonElems |> List.toArray)
         | DataModelNode.Map map ->
-            JsonObject(
+            let! jsonProps =
                 map
-                |> Map.toSeq
-                |> Seq.map ^fun (key, value) ->
-                    KeyValuePair(key, encode value)
-            )
+                |> Map.toList
+                |> List.traverseResultM ^fun (k, v) -> result {
+                    let! k = k |> function DataModelNode.String k -> Ok k | _ -> Error "Key can be only String"
+                    let! v = tryEncode v
+                    return k, v
+                }
+            return JsonObject(jsonProps |> Seq.map KeyValuePair)
         | DataModelNode.Link cid ->
-            JsonObject([
+            return JsonObject([
                 KeyValuePair(
                     "/",
                     JsonValue.Create(Cid.encode cid) :> JsonNode
                 )
             ])
+    }
 
     let rec tryDecode (multibaseProvider: IMultiBaseProvider) (jsonNode: JsonNode) : Result<DataModelNode, string> =
         let tryDecode = tryDecode multibaseProvider
@@ -86,7 +89,7 @@ module DagJson =
                 jsonObject
                 |> Seq.toList
                 |> List.traverseResultM ^fun (KeyValue (key, value)) ->
-                    tryDecode value |> Result.map (fun value -> key, value)
+                    tryDecode value |> Result.map (fun value -> DataModelNode.String key, value)
                 |> Result.map (Map.ofList >> DataModelNode.Map)
         | :? JsonArray as jsonArray ->
             jsonArray
@@ -100,15 +103,17 @@ type DagJsonCodec(multibaseProvider: IMultiBaseProvider) =
     interface ICodec with
         member _.CodecInfo = MultiCodecInfos.DagJson
 
-        member this.Encode(writeToStream, dataModelNode) =
-            let jsonNode = DagJson.encode dataModelNode
+        member this.Encode(writeToStream, dataModelNode) = result {
+            let! jsonNode = DagJson.tryEncode dataModelNode |> Result.mapError exn
             let jsonWriterOptions = JsonWriterOptions(
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             )
             use utf8JsonWriter = new Utf8JsonWriter(writeToStream, jsonWriterOptions)
             let jsonSerializerOptions = JsonSerializerOptions(JsonSerializerOptions.Default)
             JsonSerializer.Serialize(utf8JsonWriter, jsonNode, jsonSerializerOptions)
+        }
 
-        member this.Decode(stream) =
+        member this.Decode(stream) = result {
             let jsonNode = JsonSerializer.Deserialize<JsonNode>(stream)
-            DagJson.tryDecode multibaseProvider jsonNode |> Result.mapError exn
+            return! DagJson.tryDecode multibaseProvider jsonNode |> Result.mapError exn
+        }

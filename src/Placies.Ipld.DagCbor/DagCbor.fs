@@ -9,36 +9,50 @@ open Placies.Ipld
 [<RequireQualifiedAccess>]
 module DagCbor =
 
-    let rec encode (dataModelNode: DataModelNode) : CBORObject =
+    let rec tryEncode (dataModelNode: DataModelNode) : Result<CBORObject, string> = result {
         match dataModelNode with
         | DataModelNode.Null ->
-            CBORObject.Null
+            return CBORObject.Null
         | DataModelNode.Boolean b ->
-            if b then CBORObject.True else CBORObject.False
+            return if b then CBORObject.True else CBORObject.False
         | DataModelNode.Integer i ->
-            CBORObject.FromObject(i)
+            return CBORObject.FromObject(i)
         | DataModelNode.Float f ->
-            CBORObject.FromObject(f)
+            return CBORObject.FromObject(f)
         | DataModelNode.String s ->
-            CBORObject.FromObject(s)
+            return CBORObject.FromObject(s)
         | DataModelNode.Bytes bytes ->
-            CBORObject.FromObject(bytes)
+            return CBORObject.FromObject(bytes)
         | DataModelNode.List list ->
-            let cborObject = CBORObject.NewArray()
-            for node in list do
-                cborObject.Add(encode node) |> ignore
-            cborObject
+            return!
+                list
+                |> List.traverseResultM tryEncode
+                |> Result.map ^fun list ->
+                    let cborObject = CBORObject.NewArray()
+                    for cbor in list do
+                        cborObject.Add(cbor) |> ignore
+                    cborObject
         | DataModelNode.Map map ->
-            let cborObject = CBORObject.NewMap()
-            for key, value in map |> Map.toSeq do
-                cborObject.Add(key, encode value) |> ignore
-            cborObject
+            return!
+                map
+                |> Map.toList
+                |> List.traverseResultM ^fun (k, v) -> result {
+                    let! k = k |> function DataModelNode.String k -> Ok k | _ -> Error "Key can be only String"
+                    let! v = tryEncode v
+                    return k, v
+                }
+                |> Result.map ^fun elems ->
+                    let cborObject = CBORObject.NewMap()
+                    for key, value in elems do
+                        cborObject.Add(key, value) |> ignore
+                    cborObject
         | DataModelNode.Link cid ->
             let bytes = [|
                 yield 0x00uy // Multibase prefix
                 yield! cid |> Cid.toByteArray
             |]
-            CBORObject.FromObjectAndTag(bytes, 42)
+            return CBORObject.FromObjectAndTag(bytes, 42)
+    }
 
     let rec tryDecode (cbor: CBORObject) : Result<DataModelNode, string> = result {
         if cbor.IsNull then
@@ -71,7 +85,7 @@ module DagCbor =
                 cbor.Entries
                 |> Seq.toList
                 |> List.traverseResultM ^fun (KeyValue (key, value)) ->
-                    tryDecode value |> Result.map (fun v -> key.AsString(), v)
+                    tryDecode value |> Result.map (fun v -> DataModelNode.String (key.AsString()), v)
                 |> Result.map (Map.ofList >> DataModelNode.Map)
         | _ ->
             return! Error $"Invalid CBOR: %A{cbor}"
@@ -81,9 +95,13 @@ module DagCbor =
 type DagCborCodec() =
     interface ICodec with
         member this.CodecInfo = MultiCodecInfos.DagCbor
-        member this.Decode(stream) =
+
+        member this.Decode(stream) = result {
             let cbor = CBORObject.Read(stream)
-            DagCbor.tryDecode cbor |> Result.mapError exn
-        member this.Encode(writeToStream, dataModelNode) =
-            let cbor = DagCbor.encode dataModelNode
+            return! DagCbor.tryDecode cbor |> Result.mapError exn
+        }
+
+        member this.Encode(writeToStream, dataModelNode) = result {
+            let! cbor = DagCbor.tryEncode dataModelNode |> Result.mapError exn
             CBORObject.Write(cbor, writeToStream, CBOREncodeOptions("float64=true"))
+        }

@@ -46,6 +46,14 @@ module Result =
 
 type ResultExn<'a> = Result<'a, exn>
 
+[<RequireQualifiedAccess>]
+module ResultExn =
+
+    let getOk (resExn: ResultExn<'a>) : 'a =
+        match resExn with
+        | Ok a -> a
+        | Error ex -> raise ex
+
 
 [<RequireQualifiedAccess>]
 module Option =

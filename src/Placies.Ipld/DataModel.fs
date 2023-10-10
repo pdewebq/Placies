@@ -23,7 +23,7 @@ type DataModelNode =
     | String of string
     | Bytes of byte array
     | List of DataModelNode list
-    | Map of Map<string, DataModelNode> // TODO: Map<DataModelNode, DataModelNode>
+    | Map of Map<DataModelNode, DataModelNode>
     | Link of Cid
 
 [<RequireQualifiedAccess>]

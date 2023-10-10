@@ -56,7 +56,7 @@ type DagJsonTests(output: ITestOutputHelper) =
         output.WriteLine("")
 
         use reencodedDataStream = new MemoryStream()
-        let reencodedCid = Codec.encodeWithCid dagJsonCodec 1 MultiHashInfos.Sha2_256 dataModelNode reencodedDataStream
+        let reencodedCid = Codec.encodeWithCid dagJsonCodec 1 MultiHashInfos.Sha2_256 dataModelNode reencodedDataStream |> ResultExn.getOk
         let reencodedDataBytes = reencodedDataStream.ToArray()
 
         output.WriteLine("Reencoded bytes:")
