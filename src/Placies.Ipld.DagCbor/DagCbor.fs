@@ -97,12 +97,12 @@ type DagCborCodec() =
     interface ICodec with
         member this.CodecInfo = MultiCodecInfos.DagCbor
 
-        member this.Decode(stream) = result {
+        member this.TryDecodeAsync(stream) = taskResult {
             let cbor = CBORObject.Read(stream)
             return! DagCbor.tryDecode cbor |> Result.mapError exn
         }
 
-        member this.Encode(writeToStream, dataModelNode) = result {
+        member this.TryEncodeAsync(writeToStream, dataModelNode) = taskResult {
             let! cbor = DagCbor.tryEncode dataModelNode |> Result.mapError exn
             CBORObject.Write(cbor, writeToStream, CBOREncodeOptions("float64=true"))
         }

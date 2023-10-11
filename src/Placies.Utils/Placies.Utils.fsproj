@@ -11,10 +11,12 @@
         <Compile Include="Result.fs" />
         <Compile Include="Collections.fs" />
         <Compile Include="AddableBuilder.fs" />
+        <Compile Include="Task.fs" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
+      <PackageReference Include="FsToolkit.ErrorHandling.TaskResult" Version="4.9.0" />
     </ItemGroup>
 
 </Project>

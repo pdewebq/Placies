@@ -50,14 +50,14 @@ type DagJsonTests(output: ITestOutputHelper) =
         output.WriteLine("")
 
         use dataStream = new MemoryStream(fixture.DataBytes)
-        let dataModelNode = (dagJsonCodec :> ICodec).Decode(dataStream) |> Result.getOk
+        let dataModelNode = (dagJsonCodec :> ICodec).TryDecodeAsync(dataStream) |> Task.runSynchronously |> ResultExn.getOk
 
         output.WriteLine("Decoded DataModel node:")
         output.WriteLine($"%A{dataModelNode}")
         output.WriteLine("")
 
         use reencodedDataStream = new MemoryStream()
-        let reencodedCid = Codec.encodeWithCid dagJsonCodec 1 MultiHashInfos.Sha2_256 dataModelNode reencodedDataStream |> ResultExn.getOk
+        let reencodedCid = (dagJsonCodec :> ICodec).TryEncodeWithCidAsync(reencodedDataStream, dataModelNode, 1, MultiHashInfos.Sha2_256) |> Task.runSynchronously |> ResultExn.getOk
         let reencodedDataBytes = reencodedDataStream.ToArray()
 
         output.WriteLine("Reencoded bytes:")

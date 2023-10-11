@@ -10,10 +10,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FsToolkit.ErrorHandling.TaskResult" Version="4.9.0" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Placies.SigningGateway.Shared\Placies.SigningGateway.Shared.fsproj" />
     </ItemGroup>
 

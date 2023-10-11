@@ -104,17 +104,15 @@ type DagJsonCodec(multibaseProvider: IMultiBaseProvider) =
     interface ICodec with
         member _.CodecInfo = MultiCodecInfos.DagJson
 
-        member this.Encode(writeToStream, dataModelNode) = result {
+        member this.TryEncodeAsync(writeToStream, dataModelNode) = taskResult {
             let! jsonNode = DagJson.tryEncode dataModelNode |> Result.mapError exn
-            let jsonWriterOptions = JsonWriterOptions(
+            let jsonSerializerOptions = JsonSerializerOptions(
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             )
-            use utf8JsonWriter = new Utf8JsonWriter(writeToStream, jsonWriterOptions)
-            let jsonSerializerOptions = JsonSerializerOptions(JsonSerializerOptions.Default)
-            JsonSerializer.Serialize(utf8JsonWriter, jsonNode, jsonSerializerOptions)
+            do! JsonSerializer.SerializeAsync(writeToStream, jsonNode, jsonSerializerOptions)
         }
 
-        member this.Decode(stream) = result {
-            let jsonNode = JsonSerializer.Deserialize<JsonNode>(stream)
+        member this.TryDecodeAsync(stream) = taskResult {
+            let! jsonNode = JsonSerializer.DeserializeAsync<JsonNode>(stream)
             return! DagJson.tryDecode multibaseProvider jsonNode |> Result.mapError exn
         }
