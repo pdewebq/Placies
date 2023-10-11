@@ -7,6 +7,7 @@
 
     <ItemGroup>
       <Compile Include="DataModel.fs" />
+      <Compile Include="DataModelBuilders.fs" />
       <Compile Include="Codec.fs" />
     </ItemGroup>
 
