@@ -10,6 +10,8 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Http.Extensions
 open Microsoft.AspNetCore.Http
 open Placies
+open Placies.Utils
+open Placies.Utils.Collections
 open Placies.Multiformats
 
 

@@ -4,6 +4,7 @@ namespace Placies
 
 open System.IO
 open FsToolkit.ErrorHandling
+open Placies.Utils
 open Placies.Multiformats
 
 [<StructuredFormatDisplay("{DisplayText}")>]

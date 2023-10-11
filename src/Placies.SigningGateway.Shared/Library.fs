@@ -6,6 +6,7 @@ open System.Security.Cryptography
 open System.Text
 open FsToolkit.ErrorHandling
 open Placies
+open Placies.Utils
 open Placies.Gateway
 open Placies.Multiformats
 

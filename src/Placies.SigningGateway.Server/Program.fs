@@ -21,6 +21,7 @@ open Org.BouncyCastle.OpenSsl
 open Org.BouncyCastle.Security
 
 open Placies
+open Placies.Utils
 open Placies.Multiformats
 open Placies.Gateway
 open Placies.SigningGateway

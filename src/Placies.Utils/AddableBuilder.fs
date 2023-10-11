@@ -1,4 +1,4 @@
-namespace Placies
+namespace Placies.Utils
 
 open System.Runtime.CompilerServices
 

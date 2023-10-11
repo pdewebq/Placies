@@ -5,6 +5,7 @@ open Xunit
 open Xunit.Abstractions
 open Swensen.Unquote
 open Placies
+open Placies.Utils
 open Placies.Multiformats
 open Placies.Ipld
 open Placies.Ipld.DagCbor

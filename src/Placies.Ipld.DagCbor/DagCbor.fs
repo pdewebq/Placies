@@ -3,6 +3,7 @@ namespace Placies.Ipld.DagCbor
 open FsToolkit.ErrorHandling
 open PeterO.Cbor
 open Placies
+open Placies.Utils
 open Placies.Multiformats
 open Placies.Ipld
 

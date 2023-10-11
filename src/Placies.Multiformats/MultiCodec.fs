@@ -1,7 +1,7 @@
 namespace Placies.Multiformats
 
 open System.Collections.Generic
-open Placies
+open Placies.Utils
 
 type MultiCodecInfo = {
     Name: string

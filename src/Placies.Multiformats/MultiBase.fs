@@ -3,7 +3,7 @@ namespace Placies.Multiformats
 open System
 open System.Collections.Generic
 open FsToolkit.ErrorHandling
-open Placies
+open Placies.Utils
 
 type IBaseEncoder =
     abstract Encode: bytes: byte array -> string

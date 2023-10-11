@@ -2,6 +2,7 @@ namespace Placies.Ipld.Tests
 
 open System.IO
 open Placies
+open Placies.Utils.Collections
 open Placies.Multiformats
 
 type FixtureEntry = {

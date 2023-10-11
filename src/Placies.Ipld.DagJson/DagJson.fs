@@ -5,6 +5,7 @@ open System.Text.Json
 open System.Text.Json.Nodes
 open FsToolkit.ErrorHandling
 open Placies
+open Placies.Utils
 open Placies.Multiformats
 open Placies.Ipld
 

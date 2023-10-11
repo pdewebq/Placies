@@ -5,6 +5,7 @@ open System.Collections.Generic
 open System.IO
 open System.Security.Cryptography
 open Placies
+open Placies.Utils
 
 type MultiHashInfo = {
     CodecInfo: MultiCodecInfo
