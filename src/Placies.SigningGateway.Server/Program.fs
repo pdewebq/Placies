@@ -4,7 +4,6 @@ open System
 open System.IO
 open System.Net.Http
 open System.Threading.Tasks
-open System.Security.Cryptography
 open FsToolkit.ErrorHandling
 open Microsoft.Extensions.Primitives
 open Microsoft.Extensions.Hosting
@@ -15,10 +14,8 @@ open Microsoft.AspNetCore.Http.Extensions
 open Microsoft.AspNetCore.WebUtilities
 open Microsoft.AspNetCore.Http
 open Microsoft.Net.Http.Headers
-open Org.BouncyCastle.Crypto
 open Org.BouncyCastle.Crypto.Parameters
 open Org.BouncyCastle.OpenSsl
-open Org.BouncyCastle.Security
 
 open Placies
 open Placies.Utils
@@ -49,14 +46,11 @@ let main args =
 
     let app = builder.Build()
 
-    let importPublicKey (pem: string) : RSACryptoServiceProvider =
-        let pemReader = PemReader(new StringReader(pem))
-        let publicKey = pemReader.ReadObject() :?> AsymmetricKeyParameter
-        let rsaParams = DotNetUtilities.ToRSAParameters(publicKey :?> RsaKeyParameters)
-
-        let csp = new RSACryptoServiceProvider()
-        csp.ImportParameters(rsaParams)
-        csp
+    let importPublicKey (pem: string) : RsaKeyParameters =
+        let pemStringReader = new StringReader(pem)
+        let pemReader = PemReader(pemStringReader)
+        let publicKey = pemReader.ReadObject() :?> RsaKeyParameters
+        publicKey
     let publicKeyPath = app.Configuration.["SigningPublicKeyPath"]
     let publicKey = importPublicKey (File.ReadAllText(publicKeyPath))
 

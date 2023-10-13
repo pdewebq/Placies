@@ -5,40 +5,61 @@ open System.IO
 open System.Security.Cryptography
 open System.Text
 open FsToolkit.ErrorHandling
+open Org.BouncyCastle.Crypto
+open Org.BouncyCastle.Crypto.Digests
+open Org.BouncyCastle.Crypto.Parameters
+open Org.BouncyCastle.Crypto.Signers
 open Placies
 open Placies.Utils
 open Placies.Gateway
 open Placies.Multiformats
 
+[<AutoOpen>]
+module SignerExtensions =
+    type ISigner with
+        member this.GenerateSignatureFromData(input: byte array): byte array =
+            this.BlockUpdate(input, 0, input.Length)
+            let signature = this.GenerateSignature()
+            this.Reset()
+            signature
+        member this.VerifySignatureFromData(input: byte array, signature: byte array): bool =
+            this.BlockUpdate(input, 0, input.Length)
+            let isValid = this.VerifySignature(signature)
+            this.Reset()
+            isValid
+
 [<RequireQualifiedAccess>]
 module SigningContentRoot =
 
-    let signContentRoot (contentRoot: IpfsContentRoot) (privateKey: RSA) (hashAlg: HashAlgorithmName) (padding: RSASignaturePadding) =
+    let signContentRootRsa (contentRoot: IpfsContentRoot) (rsaPrivateKey: RsaKeyParameters) (hashAlg: HashAlgorithmName) =
         let stream = new MemoryStream()
         use streamWriter = new BinaryWriter(stream)
         stream.WriteVarint(MultiCodecInfos.Varsig.Code)
         stream.WriteVarint(MultiCodecInfos.RsaPub.Code)
         match hashAlg with
         | Equals HashAlgorithmName.SHA256 ->
+            let rsaSigner = RsaDigestSigner(Sha256Digest())
+            rsaSigner.Init(true, rsaPrivateKey)
+
             stream.WriteVarint(MultiCodecInfos.Sha2_256.Code)
             match contentRoot with
             | IpfsContentRoot.Ipfs cid ->
                 let signingDataBytes = cid |> Cid.toByteArray
-                let signatureBytes = privateKey.SignData(signingDataBytes, hashAlg, padding)
+                let signatureBytes = rsaSigner.GenerateSignatureFromData(signingDataBytes)
                 stream.WriteVarint(signatureBytes.Length)
                 stream.WriteVarint(MultiCodecInfos.Ipfs.Code)
                 stream.WriteVarint(MultiCodecInfos.Cidv1.Code)
                 streamWriter.Write(signatureBytes)
             | IpfsContentRoot.Ipns (IpfsContentRootIpns.Key libp2pKey) ->
                 let signingDataBytes = libp2pKey |> Cid.toByteArray
-                let signatureBytes = privateKey.SignData(signingDataBytes, hashAlg, padding)
+                let signatureBytes = rsaSigner.GenerateSignatureFromData(signingDataBytes)
                 stream.WriteVarint(signatureBytes.Length)
                 stream.WriteVarint(MultiCodecInfos.Ipns.Code)
                 stream.WriteVarint(MultiCodecInfos.Libp2pKey.Code)
                 streamWriter.Write(signatureBytes)
             | IpfsContentRoot.Ipns (IpfsContentRootIpns.DnsName dnsName) ->
                 let signingDataBytes = Encoding.UTF8.GetBytes(dnsName)
-                let signatureBytes = privateKey.SignData(signingDataBytes, hashAlg, padding)
+                let signatureBytes = rsaSigner.GenerateSignatureFromData(signingDataBytes)
                 stream.WriteVarint(signatureBytes.Length)
                 stream.WriteVarint(MultiCodecInfos.Ipns.Code)
                 stream.WriteVarint(MultiCodecInfos.Dns.Code)
@@ -47,7 +68,7 @@ module SigningContentRoot =
             invalidOp $"Not supported hash algorithm: {hashAlg}"
         stream
 
-    let verifyVarsigSignature (multibaseProvider: IMultiBaseProvider) (contentRoot: IpfsContentRoot) (publicKey: RSA) (varsigStr: string) = result {
+    let verifyVarsigSignature (multibaseProvider: IMultiBaseProvider) (contentRoot: IpfsContentRoot) (rsaPublicKey: RsaKeyParameters) (varsigStr: string) = result {
         let varsigBytes = MultiBase.tryDecode multibaseProvider varsigStr |> Result.getOk
         use stream = new MemoryStream(varsigBytes)
         let varsigCode = stream.ReadVarint32()
@@ -58,6 +79,9 @@ module SigningContentRoot =
             let rsaHashAlgorithmCode = stream.ReadVarint32()
             match rsaHashAlgorithmCode with
             | Equals MultiCodecInfos.Sha2_256.Code ->
+                let rsaSigner = RsaDigestSigner(Sha256Digest())
+                rsaSigner.Init(false, rsaPublicKey)
+
                 let signatureByteLength = stream.ReadVarint32()
                 let readSigningDataBytes (stream: Stream) = result {
                     match contentRoot with
@@ -80,7 +104,7 @@ module SigningContentRoot =
                 let! signingDataBytes = readSigningDataBytes stream
                 let signatureBytes = Array.zeroCreate signatureByteLength
                 stream.Read(signatureBytes.AsSpan()) |> ignore
-                let isValid = publicKey.VerifyData(signingDataBytes, signatureBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1)
+                let isValid = rsaSigner.VerifySignatureFromData(signingDataBytes, signatureBytes)
                 return isValid
             | _ ->
                 return! Error $"Not supported hash algorithm: {rsaHashAlgorithmCode}"

@@ -4,7 +4,6 @@ open System.IO
 open System.Security.Cryptography
 open Org.BouncyCastle.Crypto.Parameters
 open Org.BouncyCastle.OpenSsl
-open Org.BouncyCastle.Security
 
 open Placies
 open Placies.Utils
@@ -17,14 +16,11 @@ let main args =
 
     let multibaseProvider = MultiBaseRegistry.CreateDefault()
 
-    let importPrivateKey (pem: string) : RSACryptoServiceProvider =
-        let pemReader = PemReader(new StringReader(pem))
+    let importPrivateKey (pem: string) : RsaKeyParameters =
+        use pemStringReader = new StringReader(pem)
+        let pemReader = PemReader(pemStringReader)
         let privateKey = pemReader.ReadObject() :?> RsaPrivateCrtKeyParameters
-        let rsaParams = DotNetUtilities.ToRSAParameters(privateKey)
-
-        let csp = new RSACryptoServiceProvider()
-        csp.ImportParameters(rsaParams)
-        csp
+        privateKey
     let privateKeyPath = args.[0]
     let privateKey = importPrivateKey (File.ReadAllText(privateKeyPath))
 
@@ -32,13 +28,13 @@ let main args =
     match input with
     | Regex @"^\/ipfs\/(.+)$" [ cidStr ] ->
         let contentRoot = IpfsContentRoot.Ipfs (cidStr |> Cid.parse multibaseProvider)
-        let varsig = SigningContentRoot.signContentRoot contentRoot privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
+        let varsig = SigningContentRoot.signContentRootRsa contentRoot privateKey HashAlgorithmName.SHA256
         let varsig = varsig.ToArray() |> MultiBase.encode MultiBaseInfos.Base58Btc
         printfn $"/ipfs/cidv1/{cidStr} varsig: {varsig}"
     | Regex @"^\/ipns\/(.+)$" [ ipnsName ] ->
         let contentRootIpns = ipnsName |> IpfsContentRootIpns.parseIpnsName multibaseProvider false
         let contentRoot = IpfsContentRoot.Ipns contentRootIpns
-        let varsig = SigningContentRoot.signContentRoot contentRoot privateKey HashAlgorithmName.SHA256 RSASignaturePadding.Pkcs1
+        let varsig = SigningContentRoot.signContentRootRsa contentRoot privateKey HashAlgorithmName.SHA256
         let varsig = varsig.ToArray() |> MultiBase.encode MultiBaseInfos.Base58Btc
         match contentRootIpns with
         | IpfsContentRootIpns.Key _ ->
