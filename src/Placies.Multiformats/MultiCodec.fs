@@ -25,6 +25,8 @@ module MultiCodecInfos =
     let Ipfs = { Name = "ipfs"; Code = 0xe3 }
     let Ipns = { Name = "ipns"; Code = 0xe5 }
 
+    let Ed25519Pub = { Name = "ed25519-pub"; Code = 0xed }
+
     let DagJson = { Name = "dag-json"; Code = 0x0129 }
 
     let RsaPub = { Name = "rsa-pub"; Code = 0x1205 }
@@ -59,6 +61,7 @@ type MultiCodecRegistry() =
         registry.Register(MultiCodecInfos.Libp2pKey) |> ignore
         registry.Register(MultiCodecInfos.Ipfs) |> ignore
         registry.Register(MultiCodecInfos.Ipns) |> ignore
+        registry.Register(MultiCodecInfos.Ed25519Pub) |> ignore
         registry.Register(MultiCodecInfos.DagJson) |> ignore
         registry.Register(MultiCodecInfos.RsaPub) |> ignore
         registry

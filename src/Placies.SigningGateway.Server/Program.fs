@@ -46,14 +46,26 @@ let main args =
 
     let app = builder.Build()
 
-    let importPublicKey (pem: string) : RsaKeyParameters =
-        let pemStringReader = new StringReader(pem)
-        let pemReader = PemReader(pemStringReader)
-        let publicKey = pemReader.ReadObject() :?> RsaKeyParameters
-        publicKey
-    let publicKeyPath = app.Configuration.["SigningPublicKeyPath"]
-    let publicKey = importPublicKey (File.ReadAllText(publicKeyPath))
-
+    let verifyVarsigSignature =
+        let publicKeyAlgorithmName = app.Configuration.["SigningPublicKey:SigningAlgorithm"]
+        let publicKeyPath = app.Configuration.["SigningPublicKey:PublicKeyPath"]
+        match publicKeyAlgorithmName.ToLower() with
+        | "rsa" ->
+            let pem = File.ReadAllText(publicKeyPath)
+            let pemStringReader = new StringReader(pem)
+            let pemReader = PemReader(pemStringReader)
+            let rsaPublicKey = pemReader.ReadObject() :?> RsaKeyParameters
+            fun multibaseProvider contentRoot varsig ->
+                SigningContentRoot.verifyVarsigSignatureRsa multibaseProvider contentRoot rsaPublicKey varsig
+        | "ed25519" ->
+            let pem = File.ReadAllText(publicKeyPath)
+            let pemStringReader = new StringReader(pem)
+            let pemReader = PemReader(pemStringReader)
+            let ed25519PublicKey = pemReader.ReadObject() :?> Ed25519PublicKeyParameters
+            fun multibaseProvider contentRoot varsig ->
+                SigningContentRoot.verifyVarsigSignatureEd25519 multibaseProvider contentRoot ed25519PublicKey varsig
+        | _ ->
+            failwith $"Unsupported signing algorithm: {publicKeyAlgorithmName}"
 
     let signingAddressCookieKey (contentRoot: IpfsContentRoot) =
         let ns, value = IpfsContentRoot.toNamespaceAndValue contentRoot
@@ -89,7 +101,7 @@ let main args =
                     let! varsigStr = tryGetVarsig ctx.Request gatewayRequest.ContentRoot
                     let! isValid =
                         varsigStr
-                        |> SigningContentRoot.verifyVarsigSignature multibaseProvider gatewayRequest.ContentRoot publicKey
+                        |> verifyVarsigSignature multibaseProvider gatewayRequest.ContentRoot
                         |> Result.mapError (fun err -> Results.BadRequest(err))
                     do! if not isValid then Result.Error (Results.Unauthorized("Signature is not verified")) else Ok ()
                     app.Logger.LogInformation("Valid")
