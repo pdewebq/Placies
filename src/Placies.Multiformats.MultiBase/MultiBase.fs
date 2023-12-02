@@ -39,5 +39,5 @@ module MultiBase =
         return multibaseInfo.BaseEncoder.Decode(text)
     }
 
-    let decide provider multibaseText =
+    let decode provider multibaseText =
         tryDecode provider multibaseText |> Result.getOk

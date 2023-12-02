@@ -152,7 +152,7 @@ module SigningContentRoot =
         let ed25519Signer = Ed25519Signer()
         ed25519Signer.Init(false, ed25519PublicKey)
 
-        let varsigBytes = varsigStr |> MultiBase.decide multibaseProvider
+        let varsigBytes = varsigStr |> MultiBase.decode multibaseProvider
         use stream = new MemoryStream(varsigBytes)
         let varsigCode = stream.ReadVarint32()
         do! Result.requireEqual varsigCode MultiCodecInfos.Varsig.Code $"{varsigCode} is not varsig"
