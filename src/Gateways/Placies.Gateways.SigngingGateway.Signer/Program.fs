@@ -1,4 +1,4 @@
-﻿module Placies.SigningGateway.Signer.Program
+﻿module Placies.Gateways.SigningGateway.Signer.Program
 
 open System.IO
 open System.Security.Cryptography
@@ -9,8 +9,8 @@ open Org.BouncyCastle.OpenSsl
 open Placies
 open Placies.Utils
 open Placies.Multiformats
-open Placies.Gateway
-open Placies.SigningGateway
+open Placies.Gateways
+open Placies.Gateways.SigningGateway
 
 type CliArguments =
     | [<ExactlyOnce>] Private_Key of path: string

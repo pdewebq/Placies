@@ -1,4 +1,4 @@
-﻿namespace Placies.SigningGateway
+﻿namespace Placies.Gateways.SigningGateway
 
 open System
 open System.IO
@@ -11,7 +11,7 @@ open Org.BouncyCastle.Crypto.Parameters
 open Org.BouncyCastle.Crypto.Signers
 open Placies
 open Placies.Utils
-open Placies.Gateway
+open Placies.Gateways
 open Placies.Multiformats
 
 [<AutoOpen>]

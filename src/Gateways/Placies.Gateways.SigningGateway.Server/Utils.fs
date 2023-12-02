@@ -1,5 +1,5 @@
 [<AutoOpen>]
-module Placies.SigningGateway.Server.Utils
+module Placies.Gateways.SigningGateway.Server.Utils
 
 open Microsoft.AspNetCore.Http
 

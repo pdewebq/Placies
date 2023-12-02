@@ -1,4 +1,4 @@
-module Placies.SigningGateway.Server.Program
+module Placies.Gateways.SigningGateway.Server.Program
 
 open System
 open System.IO
@@ -17,11 +17,10 @@ open Microsoft.Net.Http.Headers
 open Org.BouncyCastle.Crypto.Parameters
 open Org.BouncyCastle.OpenSsl
 
-open Placies
 open Placies.Utils
 open Placies.Multiformats
-open Placies.Gateway
-open Placies.SigningGateway
+open Placies.Gateways
+open Placies.Gateways.SigningGateway
 
 
 [<EntryPoint>]

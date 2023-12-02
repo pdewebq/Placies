@@ -1,4 +1,4 @@
-namespace Placies.Gateway
+namespace Placies.Gateways
 
 open FsToolkit.ErrorHandling
 open Placies

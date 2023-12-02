@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace>IpfsSigningGatewayProxy</RootNamespace>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>Placies.Gateways.SigningGateway.Shared</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Placies.Gateway\Placies.Gateway.fsproj" />
+      <ProjectReference Include="..\Placies.Gateways\Placies.Gateways.fsproj" />
     </ItemGroup>
 
     <ItemGroup>

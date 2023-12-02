@@ -1,4 +1,4 @@
-namespace Placies.Gateway
+namespace Placies.Gateways
 
 open System.Collections.Generic
 open Microsoft.Net.Http.Headers
