@@ -9,6 +9,7 @@
     <ItemGroup>
         <Compile Include="Utils.fs" />
         <Compile Include="MultiBase.fs" />
+        <Compile Include="DefaultMultiBaseInfos.fs" />
     </ItemGroup>
 
     <ItemGroup>

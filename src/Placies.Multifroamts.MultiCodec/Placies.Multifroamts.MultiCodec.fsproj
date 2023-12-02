@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <Compile Include="MultiCodec.fs" />
+        <Compile Include="DefaultMultiCodecInfos.fs" />
     </ItemGroup>
 
     <ItemGroup>

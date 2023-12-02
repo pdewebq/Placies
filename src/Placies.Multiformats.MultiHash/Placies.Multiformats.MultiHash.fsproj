@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <Compile Include="MultiHash.fs" />
+        <Compile Include="DefaultMultiHashInfos.fs" />
     </ItemGroup>
 
     <ItemGroup>
