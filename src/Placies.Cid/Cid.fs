@@ -3,6 +3,7 @@ namespace Placies
 #nowarn "0060" // FS0060 : Override implementations in augmentations are now deprecated. Override implementations should be given as part of the initial declaration of a type.
 
 open System.IO
+open System.Text
 open FsToolkit.ErrorHandling
 open Placies.Utils
 open Placies.Multiformats
@@ -70,6 +71,19 @@ module Cid =
         use stream = new MemoryStream()
         cid |> writeToStream stream
         stream.ToArray()
+
+    /// <example>
+    /// <c>base32 - cidv1 - raw - (sha2-256 : 256 : 2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824)</c>
+    /// </example>
+    let toHumanReadableString (multiBaseInfo: MultiBaseInfo) (multiCodecProvider: IMultiCodecProvider) (multiHashProvider: IMultiHashProvider) (cid: Cid) : string =
+        let sb = StringBuilder()
+        sb.Append(multiBaseInfo.Name).Append(" - ") |> ignore
+        sb.Append("cidv").Append(cid.Version).Append(" - ") |> ignore
+        let multiCodecInfo = multiCodecProvider.TryGetByCode(cid.ContentTypeCode) |> Option.get // TODO: Error handling
+        sb.Append(multiCodecInfo.Name).Append(" - ") |> ignore
+        let hashHumanReadableStr = cid.MultiHash |> MultiHash.toHumanReadableString multiHashProvider
+        sb.Append("(").Append(hashHumanReadableStr).Append(")") |> ignore
+        sb.ToString()
 
 type Cid with
     override this.ToString() =

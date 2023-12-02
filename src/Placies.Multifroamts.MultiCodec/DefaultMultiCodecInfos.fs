@@ -14,6 +14,8 @@ module MultiCodecInfos =
     let Varsig = { Name = "varsig"; Code = 0x34 }
     let Dns = { Name = "dns"; Code = 0x35 }
 
+    let Raw = { Name = "raw"; Code = 0x55 }
+
     let DagPb = { Name = "dag-pb"; Code = 0x70 }
     let DagCbor = { Name = "dag-cbor"; Code = 0x71 }
     let Libp2pKey = { Name = "libp2p-key"; Code = 0x72 }
@@ -48,6 +50,7 @@ type MultiCodecRegistry() =
         registry.Register(MultiCodecInfos.Sha2_256) |> ignore
         registry.Register(MultiCodecInfos.Varsig) |> ignore
         registry.Register(MultiCodecInfos.Dns) |> ignore
+        registry.Register(MultiCodecInfos.Raw) |> ignore
         registry.Register(MultiCodecInfos.DagPb) |> ignore
         registry.Register(MultiCodecInfos.DagCbor) |> ignore
         registry.Register(MultiCodecInfos.Libp2pKey) |> ignore

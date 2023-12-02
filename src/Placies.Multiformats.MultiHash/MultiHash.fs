@@ -3,6 +3,7 @@ namespace Placies.Multiformats
 open System
 open System.IO
 open System.Security.Cryptography
+open System.Text
 open Placies
 open Placies.Utils
 
@@ -55,6 +56,17 @@ module MultiHash =
         multiHash |> writeToStream stream
         let bytes = stream.ToArray()
         MultiBaseInfos.Base58Btc.BaseEncoder.Encode(bytes)
+
+    /// <example>
+    /// <c>sha2-256 : 256 : 2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824</c>
+    /// </example>
+    let toHumanReadableString (multiHashProvider: IMultiHashProvider) (multiHash: MultiHash) : string =
+        let sb = StringBuilder()
+        let multiHashInfo = multiHashProvider.TryGetByCode(multiHash.HashFunctionCode) |> Option.get // TODO: Error handling
+        sb.Append(multiHashInfo.Name).Append(" : ") |> ignore
+        sb.Append(multiHash.DigestSize * 8).Append(" : ") |> ignore
+        sb.Append(multiHash.Digest.ToHexString()) |> ignore
+        sb.ToString()
 
     // ----
 
