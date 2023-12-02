@@ -12,7 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Placies.Multiformats\Placies.Multiformats.fsproj" />
+        <ProjectReference Include="..\Placies.Multiformats.MultiBase\Placies.Multiformats.MultiBase.fsproj" />
+        <ProjectReference Include="..\Placies.Multifroamts.MultiCodec\Placies.Multifroamts.MultiCodec.fsproj" />
+        <ProjectReference Include="..\Placies.Cid\Placies.Cid.fsproj" />
     </ItemGroup>
 
 </Project>

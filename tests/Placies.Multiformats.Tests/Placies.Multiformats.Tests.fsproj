@@ -23,11 +23,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="VarIntTests.fs" />
+        <Compile Include="VarIntTests.fs" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Placies.Multiformats\Placies.Multiformats.fsproj" />
+        <ProjectReference Include="..\..\src\Placies.VarInt\Placies.VarInt.fsproj" />
+        <ProjectReference Include="..\..\src\Placies.Multiformats.MultiBase\Placies.Multiformats.MultiBase.fsproj" />
+        <ProjectReference Include="..\..\src\Placies.Multifroamts.MultiCodec\Placies.Multifroamts.MultiCodec.fsproj" />
+        <ProjectReference Include="..\..\src\Placies.Multiformats.MultiHash\Placies.Multiformats.MultiHash.fsproj" />
+        <ProjectReference Include="..\..\src\Placies.Cid\Placies.Cid.fsproj" />
     </ItemGroup>
 
 </Project>
