@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Placies.Gateways.ProxyGateway\Placies.Gateways.ProxyGateway.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="ContentRootAllowlistProvider.fs" />
+        <Compile Include="Utils.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+
+</Project>
