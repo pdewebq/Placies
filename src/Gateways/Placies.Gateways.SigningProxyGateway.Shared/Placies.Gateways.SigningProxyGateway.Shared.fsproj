@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RootNamespace>Placies.Gateways.SigningGateway.Shared</RootNamespace>
+        <RootNamespace>Placies.Gateways.SigningProxyGateway</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

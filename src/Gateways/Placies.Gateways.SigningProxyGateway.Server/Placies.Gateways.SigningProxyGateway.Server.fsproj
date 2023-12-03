@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace>Placies.Gateways.SigningGateway.Server</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,7 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Placies.Gateways.ProxyGateway\Placies.Gateways.ProxyGateway.fsproj" />
-      <ProjectReference Include="..\Placies.Gateways.SigningGateway.Shared\Placies.Gateways.SigningGateway.Shared.fsproj" />
+      <ProjectReference Include="..\Placies.Gateways.SigningProxyGateway.Shared\Placies.Gateways.SigningProxyGateway.Shared.fsproj" />
     </ItemGroup>
 
 </Project>

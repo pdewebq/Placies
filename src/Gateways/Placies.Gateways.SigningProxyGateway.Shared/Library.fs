@@ -1,4 +1,4 @@
-﻿namespace Placies.Gateways.SigningGateway
+﻿namespace Placies.Gateways.SigningProxyGateway
 
 open System
 open System.IO

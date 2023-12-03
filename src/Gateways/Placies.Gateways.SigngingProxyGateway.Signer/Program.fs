@@ -1,4 +1,4 @@
-﻿module Placies.Gateways.SigningGateway.Signer.Program
+﻿module Placies.Gateways.SigningProxyGateway.Signer.Program
 
 open System.IO
 open System.Security.Cryptography
@@ -10,7 +10,7 @@ open Placies
 open Placies.Utils
 open Placies.Multiformats
 open Placies.Gateways
-open Placies.Gateways.SigningGateway
+open Placies.Gateways.SigningProxyGateway
 
 type CliArguments =
     | [<ExactlyOnce>] Private_Key of path: string

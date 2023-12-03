@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace>Placies.Gateways.SigngingGateway.Signer</RootNamespace>
+        <RootNamespace>Placies.Gateways.SigningProxyGateway.Signer</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,7 +11,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Placies.Gateways.SigningGateway.Shared\Placies.Gateways.SigningGateway.Shared.fsproj" />
+      <ProjectReference Include="..\Placies.Gateways.SigningProxyGateway.Shared\Placies.Gateways.SigningProxyGateway.Shared.fsproj" />
     </ItemGroup>
     
     <ItemGroup>

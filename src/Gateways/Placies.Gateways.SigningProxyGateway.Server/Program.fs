@@ -1,4 +1,4 @@
-module Placies.Gateways.SigningGateway.Server.Program
+module Placies.Gateways.SigningProxyGateway.Server.Program
 
 open System
 open System.IO
@@ -18,7 +18,7 @@ open Placies.Utils
 open Placies.Multiformats
 open Placies.Gateways
 open Placies.Gateways.ProxyGateway
-open Placies.Gateways.SigningGateway
+open Placies.Gateways.SigningProxyGateway
 
 
 [<EntryPoint>]

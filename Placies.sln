@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways.SigningGateway.Server", "src\Gateways\Placies.Gateways.SigningGateway.Server\Placies.Gateways.SigningGateway.Server.fsproj", "{14D3FC41-658A-4692-B30B-D24A620BE104}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways.SigningProxyGateway.Server", "src\Gateways\Placies.Gateways.SigningProxyGateway.Server\Placies.Gateways.SigningProxyGateway.Server.fsproj", "{14D3FC41-658A-4692-B30B-D24A620BE104}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways.SigngingGateway.Signer", "src\Gateways\Placies.Gateways.SigngingGateway.Signer\Placies.Gateways.SigngingGateway.Signer.fsproj", "{A3464E32-1AC2-406B-B4DF-450DBF5977A3}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways.SigngingProxyGateway.Signer", "src\Gateways\Placies.Gateways.SigngingProxyGateway.Signer\Placies.Gateways.SigngingProxyGateway.Signer.fsproj", "{A3464E32-1AC2-406B-B4DF-450DBF5977A3}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways.SigningGateway.Shared", "src\Gateways\Placies.Gateways.SigningGateway.Shared\Placies.Gateways.SigningGateway.Shared.fsproj", "{56D30709-B055-4F03-96B9-AC1F37048070}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways.SigningProxyGateway.Shared", "src\Gateways\Placies.Gateways.SigningProxyGateway.Shared\Placies.Gateways.SigningProxyGateway.Shared.fsproj", "{56D30709-B055-4F03-96B9-AC1F37048070}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways", "src\Gateways\Placies.Gateways\Placies.Gateways.fsproj", "{469C5970-B041-499F-B2CC-48776F3B5FF3}"
 EndProject
