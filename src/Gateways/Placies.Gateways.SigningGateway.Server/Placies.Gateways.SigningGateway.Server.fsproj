@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Placies.Gateways.ProxyGateway\Placies.Gateways.ProxyGateway.fsproj" />
       <ProjectReference Include="..\Placies.Gateways.SigningGateway.Shared\Placies.Gateways.SigningGateway.Shared.fsproj" />
     </ItemGroup>
 

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Placies.Gateways\Placies.Gateways.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="ProxyGateway.fs" />
+    </ItemGroup>
+
+</Project>

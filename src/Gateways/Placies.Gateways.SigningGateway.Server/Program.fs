@@ -2,15 +2,12 @@ module Placies.Gateways.SigningGateway.Server.Program
 
 open System
 open System.IO
-open System.Net.Http
-open System.Threading.Tasks
 open FsToolkit.ErrorHandling
 open Microsoft.Extensions.Primitives
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Http.Extensions
 open Microsoft.AspNetCore.WebUtilities
 open Microsoft.AspNetCore.Http
 open Microsoft.Net.Http.Headers
@@ -20,6 +17,7 @@ open Org.BouncyCastle.OpenSsl
 open Placies.Utils
 open Placies.Multiformats
 open Placies.Gateways
+open Placies.Gateways.ProxyGateway
 open Placies.Gateways.SigningGateway
 
 
@@ -32,16 +30,7 @@ let main args =
 
     // TODO: Check that this address is only host
     let proxiedGatewayAddress = Uri(builder.Configuration.["ProxiedGateway:Address"])
-
-    let httpClientIpfsHttpGatewayName = "IpfsHttpGateway"
-
-    builder.Services.AddHttpClient< >(httpClientIpfsHttpGatewayName, fun httpClient ->
-        httpClient.BaseAddress <- proxiedGatewayAddress
-    ).ConfigurePrimaryHttpMessageHandler(fun () ->
-        new HttpClientHandler(
-            AllowAutoRedirect = false
-        ) :> HttpMessageHandler
-    ) |> ignore
+    builder.Services.AddIpfsProxyGateway(proxiedGatewayAddress) |> ignore
 
     let app = builder.Build()
 
@@ -83,95 +72,42 @@ let main args =
             return varsig
     }
 
-    app.Use(Func<HttpContext, RequestDelegate, Task>(fun ctx next -> task {
-        match ctx.Request.Method with
-        | Equals HttpMethods.Get ->
-            let! res = taskResult {
-                let gatewayRequest = GatewayRequest.ofHttpRequest ctx.Request
-                match gatewayRequest with
-                | None ->
-                    return! next.Invoke(ctx)
-                | Some gatewayRequest ->
-                    let! gatewayRequest = gatewayRequest
-                    app.Logger.LogInformation("Requesting {@GatewayRequest}", gatewayRequest)
+    app.UseIpfsProxyGateway(
+        onRequesting=(fun ctx gatewayRequest -> taskResult {
+            let multiBaseProvider = ctx.RequestServices.GetRequiredService<IMultiBaseProvider>()
+            let! varsigStr = tryGetVarsig ctx.Request gatewayRequest.ContentRoot
+            let! isValid =
+                varsigStr
+                |> verifyVarsigSignature multiBaseProvider gatewayRequest.ContentRoot
+                |> Result.mapError (fun err -> Results.BadRequest(err))
+            do! if not isValid then Result.Error (Results.Unauthorized("Signature is not verified")) else Ok ()
+            app.Logger.LogInformation("Valid")
+            ctx.Items.["VarsigStr"] <- varsigStr
+        }),
+        onResponded=(fun ctx gatewayRequest gatewayResponse -> taskResult {
+            let varsigStr = ctx.Items.["VarsigStr"] :?> string
 
-                    let multibaseProvider = ctx.RequestServices.GetRequiredService<IMultiBaseProvider>()
+            if gatewayResponse.StatusCode = StatusCodes.Status301MovedPermanently then
+                match gatewayResponse.ResponseHeaders.TryGetValue(HeaderNames.Location) |> Option.ofTryByref with
+                | None -> ()
+                | Some locationValues ->
+                    let locationValues =
+                        locationValues
+                        |> Seq.map ^fun locationValue ->
+                            QueryHelpers.AddQueryString(locationValue, "sig", varsigStr)
+                        |> Seq.toArray |> StringValues
+                    gatewayResponse.ResponseHeaders.Remove(HeaderNames.Location) |> ignore
+                    gatewayResponse.ResponseHeaders.Add(HeaderNames.Location, locationValues)
 
-                    let! varsigStr = tryGetVarsig ctx.Request gatewayRequest.ContentRoot
-                    let! isValid =
-                        varsigStr
-                        |> verifyVarsigSignature multibaseProvider gatewayRequest.ContentRoot
-                        |> Result.mapError (fun err -> Results.BadRequest(err))
-                    do! if not isValid then Result.Error (Results.Unauthorized("Signature is not verified")) else Ok ()
-                    app.Logger.LogInformation("Valid")
-
-                    let httpClient = ctx.RequestServices.GetRequiredService<IHttpClientFactory>().CreateClient(httpClientIpfsHttpGatewayName)
-                    let! gatewayResponse = Gateway.send httpClient gatewayRequest
-
-                    if gatewayResponse.StatusCode = StatusCodes.Status301MovedPermanently then
-                        match gatewayResponse.ResponseHeaders.TryGetValue(HeaderNames.Location) |> Option.ofTryByref with
-                        | None -> ()
-                        | Some locationValues ->
-                            let proxyRedirectLocation (locationValue: string) (requestUri: Uri) =
-                                let locationUri = Uri(locationValue, UriKind.RelativeOrAbsolute)
-                                if locationUri.IsAbsoluteUri then
-                                    let originHostWithoutSubdomainIpfs (requestHost: string) =
-                                        match requestHost |> GatewayRequest.parseHostToContentRoot multibaseProvider with
-                                        | Some res ->
-                                            let _, hostRemainder = res |> Result.getOk
-                                            hostRemainder
-                                        | None ->
-                                            requestHost
-                                    match locationUri.Host |> GatewayRequest.parseHostToContentRoot multibaseProvider with
-                                    | Some res ->
-                                        let contentRoot, _ = res |> Result.getOk
-                                        let uriBuilder = UriBuilder(locationUri)
-                                        uriBuilder.Scheme <- requestUri.Scheme
-                                        uriBuilder.Host <- originHostWithoutSubdomainIpfs requestUri.Host
-                                        uriBuilder.Port <- requestUri.Port
-                                        IpfsContentRoot.appendToUriSubdomain uriBuilder contentRoot
-                                        uriBuilder.Uri.ToString()
-                                    | None ->
-                                        match PathString(locationUri.AbsolutePath) |> GatewayRequest.parsePathToContentRoot multibaseProvider  with
-                                        | Some _ ->
-                                            let uriBuilder = UriBuilder(locationUri)
-                                            uriBuilder.Scheme <- requestUri.Scheme
-                                            uriBuilder.Host <- originHostWithoutSubdomainIpfs requestUri.Host
-                                            uriBuilder.Port <- requestUri.Port
-                                            uriBuilder.Uri.ToString()
-                                        | None ->
-                                            locationValue
-                                else
-                                    locationValue
-                            let locationValues =
-                                locationValues
-                                |> Seq.map ^fun locationValue ->
-                                    proxyRedirectLocation locationValue (Uri(UriHelper.GetEncodedUrl(ctx.Request)))
-                                |> Seq.map ^fun locationValue ->
-                                    QueryHelpers.AddQueryString(locationValue, "sig", varsigStr)
-                                |> Seq.toArray |> StringValues
-                            gatewayResponse.ResponseHeaders.Remove(HeaderNames.Location) |> ignore
-                            gatewayResponse.ResponseHeaders.Add(HeaderNames.Location, locationValues)
-
-                    ctx.Response.Cookies.Append(
-                        signingAddressCookieKey gatewayRequest.ContentRoot,
-                        varsigStr,
-                        CookieBuilder(
-                            Expiration = TimeSpan.Parse(app.Configuration.["SigningGateway:CookieExpiration"])
-                        ).Build(ctx)
-                    )
-                    do! GatewayResponse.toHttpResponse ctx.Response gatewayResponse
-                    return! ctx.Response.CompleteAsync()
-            }
-            match res with
-            | Error errorResult ->
-                do! errorResult.ExecuteAsync(ctx)
-                return! ctx.Response.CompleteAsync()
-            | Ok () ->
-                ()
-        | _ ->
-            return! next.Invoke(ctx)
-    })) |> ignore
+            ctx.Response.Cookies.Append(
+                signingAddressCookieKey gatewayRequest.ContentRoot,
+                varsigStr,
+                CookieBuilder(
+                    Expiration = TimeSpan.Parse(app.Configuration.["SigningGateway:CookieExpiration"])
+                ).Build(ctx)
+            )
+        })
+    ) |> ignore
 
     app.Run()
 
