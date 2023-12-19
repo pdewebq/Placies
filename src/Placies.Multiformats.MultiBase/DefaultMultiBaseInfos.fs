@@ -32,9 +32,14 @@ module MultiBaseInfos =
             pow <- pow + 1
         result.ToByteArray(isUnsigned=true, isBigEndian=true)
 
+    let base10Alphabet = "0123456789"
     let base36Alphabet = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 
+    let Base10 = {
+        Name = "base10"; PrefixCharacter = '9'
+        BaseEncoder = BaseEncoder.create (fun bytes -> encodeAnyBase base10Alphabet bytes) (fun text -> decodeAnyBase base10Alphabet text)
+    }
     let Base16 = {
         Name = "base16"; PrefixCharacter = 'f'
         BaseEncoder = BaseEncoder.create (fun bytes -> SimpleBase.Base16.LowerCase.Encode(bytes)) (fun text -> SimpleBase.Base16.LowerCase.Decode(text))
@@ -81,6 +86,7 @@ type MultiBaseRegistry() =
 
     static member CreateDefault(): MultiBaseRegistry =
         let registry = MultiBaseRegistry()
+        registry.Register(MultiBaseInfos.Base10) |> ignore
         registry.Register(MultiBaseInfos.Base16) |> ignore
         registry.Register(MultiBaseInfos.Base32) |> ignore
         registry.Register(MultiBaseInfos.Base36) |> ignore
