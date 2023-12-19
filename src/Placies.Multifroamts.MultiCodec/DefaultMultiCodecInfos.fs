@@ -7,6 +7,7 @@ open Placies.Utils
 [<RequireQualifiedAccess>]
 module MultiCodecInfos =
 
+    let Identity = { Name = "identity"; Code = 0x0 }
     let Cidv1 = { Name = "cidv1"; Code = 0x1 }
 
     let Sha2_256 = { Name = "sha2-256"; Code = 0x12 }
@@ -46,6 +47,7 @@ type MultiCodecRegistry() =
 
     static member CreateDefault(): MultiCodecRegistry =
         let registry = MultiCodecRegistry()
+        registry.Register(MultiCodecInfos.Identity) |> ignore
         registry.Register(MultiCodecInfos.Cidv1) |> ignore
         registry.Register(MultiCodecInfos.Sha2_256) |> ignore
         registry.Register(MultiCodecInfos.Varsig) |> ignore
