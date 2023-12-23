@@ -1,6 +1,7 @@
 <Project>
 
     <PropertyGroup>
+        <UseArtifactsOutput>true</UseArtifactsOutput>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     </PropertyGroup>
 
