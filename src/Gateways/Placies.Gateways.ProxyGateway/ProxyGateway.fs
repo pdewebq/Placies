@@ -39,7 +39,7 @@ module ProxyGatewayApplicationBuilderExtensions =
             this.Use(Func<HttpContext, RequestDelegate, Task>(fun ctx next -> task {
                 let! res = taskResult {
                     match ctx.Request.Method with
-                    | Equals HttpMethods.Get ->
+                    | Equals HttpMethods.Get | Equals HttpMethods.Head ->
                         let gatewayRequest = GatewayRequest.ofHttpRequest ctx.Request
                         match gatewayRequest with
                         | None -> return! next.Invoke(ctx)
@@ -49,7 +49,7 @@ module ProxyGatewayApplicationBuilderExtensions =
 
                             let! gatewayRequest = gatewayRequest
                             do! onRequesting ctx gatewayRequest
-                            let! gatewayResponse = Gateway.send httpClient gatewayRequest
+                            let! gatewayResponse = Gateway.send httpClient gatewayRequest ctx.RequestAborted
                             if gatewayResponse.StatusCode = StatusCodes.Status301MovedPermanently then
                                 match gatewayResponse.ResponseHeaders.TryGetValue(HeaderNames.Location) |> Option.ofTryByref with
                                 | None -> ()
@@ -95,7 +95,7 @@ module ProxyGatewayApplicationBuilderExtensions =
 
                             do! onResponded ctx gatewayRequest gatewayResponse
 
-                            do! GatewayResponse.toHttpResponse ctx.Response gatewayResponse
+                            do! GatewayResponse.toHttpResponse ctx.Response gatewayResponse ctx.RequestAborted
                             return! ctx.Response.CompleteAsync()
                     | _ ->
                         return! next.Invoke(ctx)

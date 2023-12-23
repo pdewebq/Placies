@@ -4,6 +4,7 @@ open System
 open System.IO
 open System.Net.Http
 open System.Text
+open System.Threading
 open FsToolkit.ErrorHandling
 open Microsoft.Extensions.Primitives
 open Microsoft.Extensions.DependencyInjection
@@ -37,6 +38,7 @@ module IpfsContentRootUriExtensions =
 type GatewayRequest = {
     ContentRoot: IpfsContentRoot
     IsSubdomain: bool
+    Method: string
     PathRemainder: PathString
     QueryParams: QueryString
     Headers: IHeaderDictionary
@@ -112,6 +114,7 @@ module GatewayRequest =
                 return {
                     ContentRoot = contentRoot
                     IsSubdomain = false
+                    Method = httpRequest.Method
                     PathRemainder = PathString(pathRemainder)
                     QueryParams = queryParams
                     Headers = requestHeaders
@@ -147,6 +150,7 @@ module GatewayRequest =
                     return {
                         ContentRoot = contentRoot
                         IsSubdomain = true
+                        Method = httpRequest.Method
                         PathRemainder = httpRequest.Path
                         QueryParams = queryParams
                         Headers = requestHeaders
@@ -172,18 +176,19 @@ type GatewayResponse = {
 [<RequireQualifiedAccess>]
 module GatewayResponse =
 
-    let toHttpResponse (httpResponse: HttpResponse) (gatewayResponse: GatewayResponse) = task {
+    let toHttpResponse (httpResponse: HttpResponse) (gatewayResponse: GatewayResponse) (ct: CancellationToken) = task {
         httpResponse.StatusCode <- gatewayResponse.StatusCode
         for header in gatewayResponse.ResponseHeaders do
             httpResponse.Headers.Add(header)
-        do! gatewayResponse.ResponseContentStream.CopyToAsync(httpResponse.Body)
+        do! httpResponse.StartAsync(ct)
+        do! gatewayResponse.ResponseContentStream.CopyToAsync(httpResponse.Body, ct)
     }
 
 
 [<RequireQualifiedAccess>]
 module Gateway =
 
-    let send (httpClient: HttpClient) (gatewayRequest: GatewayRequest) = task {
+    let send (httpClient: HttpClient) (gatewayRequest: GatewayRequest) (ct: CancellationToken) = task {
         let uriBuilder = UriBuilder(httpClient.BaseAddress)
 
         if gatewayRequest.IsSubdomain then
@@ -194,8 +199,11 @@ module Gateway =
         uriBuilder.Path <- PathString(uriBuilder.Path).Add(gatewayRequest.PathRemainder).ToString()
         uriBuilder.Query <- gatewayRequest.QueryParams.ToString()
 
-        use requestMessage = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri)
-        let! responseMessage = httpClient.SendAsync(requestMessage)
+        let httpMethod = HttpMethod.Parse(gatewayRequest.Method)
+        use requestMessage = new HttpRequestMessage(httpMethod, uriBuilder.Uri)
+        for KeyValue (n, v) in gatewayRequest.Headers do
+            requestMessage.Headers.Add(n, v)
+        let! responseMessage = httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, ct)
 
         let responseHeaders =
             let headers = HeaderDictionary()
@@ -206,12 +214,24 @@ module Gateway =
                     IpfsHttpPathGatewaySpecs.responseHeaderNames
             for headerName in headerNames do
                 match responseMessage.Headers.TryGetValues(headerName) |> Option.ofTryByref with
-                | None -> ()
                 | Some headerValues ->
                     headers.Add(headerName, StringValues(headerValues |> Seq.toArray))
+                | None ->
+                    match responseMessage.Content.Headers.TryGetValues(headerName) |> Option.ofTryByref with
+                    | Some headerValues ->
+                        headers.Add(headerName, StringValues(headerValues |> Seq.toArray))
+                    | None -> ()
             headers
 
-        let! responseContentStream = responseMessage.Content.ReadAsStreamAsync()
+        let! responseContentStream = task {
+            match httpMethod with
+            | Equals HttpMethod.Get ->
+                return! responseMessage.Content.ReadAsStreamAsync(ct)
+            | Equals HttpMethod.Head ->
+                return Stream.Null
+            | _ ->
+                return raise (NotSupportedException($"Not supported http method: {httpMethod}"))
+        }
 
         return {
             StatusCode = int responseMessage.StatusCode
