@@ -5,6 +5,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FSharp.Control.Reactive" Version="5.0.5" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\Placies.Gateways.ProxyGateway\Placies.Gateways.ProxyGateway.fsproj" />
     </ItemGroup>
 

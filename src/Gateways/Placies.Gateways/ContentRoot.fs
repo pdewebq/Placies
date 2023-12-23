@@ -31,6 +31,10 @@ module IpfsContentRootIpns =
             let dnsName = if shouldUnescapeDnsName then unescapeIpnsDnsName ipnsName else ipnsName
             IpfsContentRootIpns.DnsName dnsName
 
+[<RequireQualifiedAccess>]
+type IpfsContentRootNamespace =
+    | Ipfs
+    | Ipns
 
 [<RequireQualifiedAccess>]
 type IpfsContentRoot =
@@ -50,3 +54,12 @@ module IpfsContentRoot =
                 | IpfsContentRootIpns.Key libp2PKey -> libp2PKey.ToString()
                 | IpfsContentRootIpns.DnsName dnsName -> dnsName
             "ipns", ipnsValue
+
+[<RequireQualifiedAccess>]
+module IpfsContentRootNamespace =
+
+    let parse (input: string) : IpfsContentRootNamespace option =
+        match input.ToLower() with
+        | "ipfs" -> Some IpfsContentRootNamespace.Ipfs
+        | "ipns" -> Some IpfsContentRootNamespace.Ipns
+        | _ -> None

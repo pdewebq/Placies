@@ -19,8 +19,14 @@ let main args =
     builder.Services.AddSingleton<IMultiBaseProvider, _>(fun _services ->
         MultiBaseRegistry.CreateDefault()
     ) |> ignore
-    builder.Services.AddSingleton<IContentRootAllowlistProvider, _>(fun _services ->
-        FileContentRootAllowlistProvider(builder.Configuration.["AllowlistProvider:FilePath"])
+    builder.Services.AddSingleton<IContentRootAllowlistProvider, _>(fun services ->
+        let provider = new FileContentRootAllowlistProvider(
+            services.GetRequiredService<_>(),
+            services.GetRequiredService<_>(),
+            builder.Configuration.["AllowlistProvider:FilePath"]
+        )
+        provider.Init().GetAwaiter().GetResult()
+        provider
     ) |> ignore
 
     // TODO: Check that this address is only host
