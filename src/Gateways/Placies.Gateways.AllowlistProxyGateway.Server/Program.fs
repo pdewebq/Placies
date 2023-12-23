@@ -20,10 +20,12 @@ let main args =
         MultiBaseRegistry.CreateDefault()
     ) |> ignore
     builder.Services.AddSingleton<IContentRootAllowlistProvider, _>(fun services ->
+        let allowlistFilePath =
+            builder.Environment.ContentRootFileProvider.GetFileInfo(builder.Configuration.["AllowlistProvider:FilePath"]).PhysicalPath
         let provider = new FileContentRootAllowlistProvider(
             services.GetRequiredService<_>(),
             services.GetRequiredService<_>(),
-            builder.Configuration.["AllowlistProvider:FilePath"]
+            allowlistFilePath
         )
         provider.Init().GetAwaiter().GetResult()
         provider
