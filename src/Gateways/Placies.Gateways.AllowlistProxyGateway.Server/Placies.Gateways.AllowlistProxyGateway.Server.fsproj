@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FSharp.Control.Reactive" Version="5.0.5" />
+        <PackageReference Include="FSharp.Control.Reactive" />
     </ItemGroup>
 
     <ItemGroup>

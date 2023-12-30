@@ -10,11 +10,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Placies.Ipld\Placies.Ipld.fsproj" />
+        <ProjectReference Include="..\Placies.Ipld\Placies.Ipld.fsproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="PeterO.Cbor" Version="4.5.2" />
+        <PackageReference Include="PeterO.Cbor" />
     </ItemGroup>
 
 </Project>

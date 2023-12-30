@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "dependencies": {
     "net8.0": {
       "FSharp.Core": {
@@ -17,22 +17,6 @@
           "System.Memory": "4.5.5"
         }
       },
-      "FsToolkit.ErrorHandling": {
-        "type": "Transitive",
-        "resolved": "4.9.0",
-        "contentHash": "Z8p+upgAX6nipdMMFUlbr0KajChF20BZ1aTzAokQ/aAboBt5AWKIfNpTHSq+veM2aPdoPJTrbvIA7NR0cL2BIQ==",
-        "dependencies": {
-          "FSharp.Core": "7.0.300"
-        }
-      },
-      "FsToolkit.ErrorHandling.TaskResult": {
-        "type": "Transitive",
-        "resolved": "4.9.0",
-        "contentHash": "bB/zkBn2Gc9wVPXt+ytPP5nsP/FKl7PfuV4+LrVz98yCEvZkWaEkwxnHePXtWA6KZrvlLLmREv02sZJAQSmQPA==",
-        "dependencies": {
-          "FsToolkit.ErrorHandling": "4.9.0"
-        }
-      },
       "System.Memory": {
         "type": "Transitive",
         "resolved": "4.5.5",
@@ -44,6 +28,24 @@
           "FSharp.Core": "[8.0.100, )",
           "FsToolkit.ErrorHandling": "[4.9.0, )",
           "FsToolkit.ErrorHandling.TaskResult": "[4.9.0, )"
+        }
+      },
+      "FsToolkit.ErrorHandling": {
+        "type": "CentralTransitive",
+        "requested": "[4.9.0, )",
+        "resolved": "4.9.0",
+        "contentHash": "Z8p+upgAX6nipdMMFUlbr0KajChF20BZ1aTzAokQ/aAboBt5AWKIfNpTHSq+veM2aPdoPJTrbvIA7NR0cL2BIQ==",
+        "dependencies": {
+          "FSharp.Core": "7.0.300"
+        }
+      },
+      "FsToolkit.ErrorHandling.TaskResult": {
+        "type": "CentralTransitive",
+        "requested": "[4.9.0, )",
+        "resolved": "4.9.0",
+        "contentHash": "bB/zkBn2Gc9wVPXt+ytPP5nsP/FKl7PfuV4+LrVz98yCEvZkWaEkwxnHePXtWA6KZrvlLLmREv02sZJAQSmQPA==",
+        "dependencies": {
+          "FsToolkit.ErrorHandling": "4.9.0"
         }
       }
     }

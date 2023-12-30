@@ -9,13 +9,13 @@
     <ItemGroup>
         <Compile Include="Program.fs"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\Placies.Gateways.SigningProxyGateway.Shared\Placies.Gateways.SigningProxyGateway.Shared.fsproj" />
+        <ProjectReference Include="..\Placies.Gateways.SigningProxyGateway.Shared\Placies.Gateways.SigningProxyGateway.Shared.fsproj" />
     </ItemGroup>
-    
+
     <ItemGroup>
-      <PackageReference Include="Argu" Version="6.1.1" />
+        <PackageReference Include="Argu" />
     </ItemGroup>
 
 </Project>

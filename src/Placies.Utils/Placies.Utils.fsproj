@@ -15,8 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
-      <PackageReference Include="FsToolkit.ErrorHandling.TaskResult" Version="4.9.0" />
+        <PackageReference Include="FsToolkit.ErrorHandling" />
+        <PackageReference Include="FsToolkit.ErrorHandling.TaskResult" />
     </ItemGroup>
 
 </Project>

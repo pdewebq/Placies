@@ -10,11 +10,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Newtonsoft.Json" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Placies.Ipld\Placies.Ipld.fsproj" />
+        <ProjectReference Include="..\Placies.Ipld\Placies.Ipld.fsproj" />
     </ItemGroup>
 
 </Project>
