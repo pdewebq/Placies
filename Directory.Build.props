@@ -5,4 +5,8 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.fsproj'">
+        <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
+
 </Project>
