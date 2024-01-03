@@ -17,8 +17,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Placies.Multiformats.MultiBase\Placies.Multiformats.MultiBase.fsproj" />
-        <ProjectReference Include="..\..\Placies.Cid\Placies.Cid.fsproj" />
+        <ProjectReference Include="..\..\Multiformats\Placies.Multiformats.MultiBase\Placies.Multiformats.MultiBase.fsproj" />
+        <ProjectReference Include="..\..\Multiformats\Placies.Cid\Placies.Cid.fsproj" />
     </ItemGroup>
 
 </Project>

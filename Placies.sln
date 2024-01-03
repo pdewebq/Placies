@@ -10,27 +10,27 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways", "src\Gat
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Utils", "src\Placies.Utils\Placies.Utils.fsproj", "{75A83038-FC2F-4B81-AE2F-CC67828B1E96}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.DagJson", "src\Placies.Ipld.DagJson\Placies.Ipld.DagJson.fsproj", "{6FAA63F9-6A7B-4C0B-BCBD-A4773AB1EA4F}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.DagJson", "src\Ipld\Placies.Ipld.DagJson\Placies.Ipld.DagJson.fsproj", "{6FAA63F9-6A7B-4C0B-BCBD-A4773AB1EA4F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D469DDCB-8563-4AC2-8CBD-3E4D9892C26A}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.Tests", "tests\Placies.Ipld.Tests\Placies.Ipld.Tests.fsproj", "{8FA91459-C8C6-43A4-ADC5-5D91EA7A249D}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld", "src\Placies.Ipld\Placies.Ipld.fsproj", "{23B55977-4109-4C63-9171-E30008CFF8C4}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld", "src\Ipld\Placies.Ipld\Placies.Ipld.fsproj", "{23B55977-4109-4C63-9171-E30008CFF8C4}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.DagCbor", "src\Placies.Ipld.DagCbor\Placies.Ipld.DagCbor.fsproj", "{7E952B9D-E4AB-4277-B059-69A5585EE65C}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.DagCbor", "src\Ipld\Placies.Ipld.DagCbor\Placies.Ipld.DagCbor.fsproj", "{7E952B9D-E4AB-4277-B059-69A5585EE65C}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Multiformats.Tests", "tests\Placies.Multiformats.Tests\Placies.Multiformats.Tests.fsproj", "{FC95B784-15F7-48D8-93C7-FBD012BC4D0D}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.VarInt", "src\Placies.VarInt\Placies.VarInt.fsproj", "{D8BC9AEF-18AA-489B-988C-85072F0FD3A5}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.VarInt", "src\Multiformats\Placies.VarInt\Placies.VarInt.fsproj", "{D8BC9AEF-18AA-489B-988C-85072F0FD3A5}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Multiformats.MultiBase", "src\Placies.Multiformats.MultiBase\Placies.Multiformats.MultiBase.fsproj", "{01AEA0A3-410F-484C-BA6A-BA1ADEF415EF}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Multiformats.MultiBase", "src\Multiformats\Placies.Multiformats.MultiBase\Placies.Multiformats.MultiBase.fsproj", "{01AEA0A3-410F-484C-BA6A-BA1ADEF415EF}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Multiformats.MultiHash", "src\Placies.Multiformats.MultiHash\Placies.Multiformats.MultiHash.fsproj", "{5E8B0A19-03A4-43D6-988B-9B6D6C038637}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Multiformats.MultiHash", "src\Multiformats\Placies.Multiformats.MultiHash\Placies.Multiformats.MultiHash.fsproj", "{5E8B0A19-03A4-43D6-988B-9B6D6C038637}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Multifroamts.MultiCodec", "src\Placies.Multifroamts.MultiCodec\Placies.Multifroamts.MultiCodec.fsproj", "{B344FC64-9EF8-43A5-9CFA-5683EC78C0B4}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Multifroamts.MultiCodec", "src\Multiformats\Placies.Multifroamts.MultiCodec\Placies.Multifroamts.MultiCodec.fsproj", "{B344FC64-9EF8-43A5-9CFA-5683EC78C0B4}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Cid", "src\Placies.Cid\Placies.Cid.fsproj", "{48BBF7DD-597A-4006-AE02-812C9FCAE79C}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Cid", "src\Multiformats\Placies.Cid\Placies.Cid.fsproj", "{48BBF7DD-597A-4006-AE02-812C9FCAE79C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Multiformats", "Multiformats", "{C33DD642-0C3D-4677-9C87-E71634E3CAF7}"
 EndProject
@@ -39,6 +39,8 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways.AllowlistProxyGateway.Server", "src\Gateways\Placies.Gateways.AllowlistProxyGateway.Server\Placies.Gateways.AllowlistProxyGateway.Server.fsproj", "{9FE34E97-3C33-4D35-9669-A001C4347F8F}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Gateways.ProxyGateway", "src\Gateways\Placies.Gateways.ProxyGateway\Placies.Gateways.ProxyGateway.fsproj", "{868D08C6-A383-4BC0-BA07-B63D43709A69}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ipld", "Ipld", "{28D2A6E8-D939-4E56-AD4A-B5D87F9294A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,5 +131,8 @@ Global
 		{469C5970-B041-499F-B2CC-48776F3B5FF3} = {A5CCC708-BA5F-44C5-8201-32FDDE032EBA}
 		{9FE34E97-3C33-4D35-9669-A001C4347F8F} = {A5CCC708-BA5F-44C5-8201-32FDDE032EBA}
 		{868D08C6-A383-4BC0-BA07-B63D43709A69} = {A5CCC708-BA5F-44C5-8201-32FDDE032EBA}
+		{23B55977-4109-4C63-9171-E30008CFF8C4} = {28D2A6E8-D939-4E56-AD4A-B5D87F9294A1}
+		{7E952B9D-E4AB-4277-B059-69A5585EE65C} = {28D2A6E8-D939-4E56-AD4A-B5D87F9294A1}
+		{6FAA63F9-6A7B-4C0B-BCBD-A4773AB1EA4F} = {28D2A6E8-D939-4E56-AD4A-B5D87F9294A1}
 	EndGlobalSection
 EndGlobal

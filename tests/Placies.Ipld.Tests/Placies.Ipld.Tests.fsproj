@@ -37,9 +37,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Placies.Ipld.DagCbor\Placies.Ipld.DagCbor.fsproj" />
-        <ProjectReference Include="..\..\src\Placies.Ipld\Placies.Ipld.fsproj" />
-        <ProjectReference Include="..\..\src\Placies.Ipld.DagJson\Placies.Ipld.DagJson.fsproj" />
+        <ProjectReference Include="..\..\src\Ipld\Placies.Ipld.DagCbor\Placies.Ipld.DagCbor.fsproj" />
+        <ProjectReference Include="..\..\src\Ipld\Placies.Ipld\Placies.Ipld.fsproj" />
+        <ProjectReference Include="..\..\src\Ipld\Placies.Ipld.DagJson\Placies.Ipld.DagJson.fsproj" />
     </ItemGroup>
 
 </Project>

@@ -28,11 +28,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Placies.VarInt\Placies.VarInt.fsproj" />
-        <ProjectReference Include="..\..\src\Placies.Multiformats.MultiBase\Placies.Multiformats.MultiBase.fsproj" />
-        <ProjectReference Include="..\..\src\Placies.Multifroamts.MultiCodec\Placies.Multifroamts.MultiCodec.fsproj" />
-        <ProjectReference Include="..\..\src\Placies.Multiformats.MultiHash\Placies.Multiformats.MultiHash.fsproj" />
-        <ProjectReference Include="..\..\src\Placies.Cid\Placies.Cid.fsproj" />
+        <ProjectReference Include="..\..\src\Multiformats\Placies.VarInt\Placies.VarInt.fsproj" />
+        <ProjectReference Include="..\..\src\Multiformats\Placies.Multiformats.MultiBase\Placies.Multiformats.MultiBase.fsproj" />
+        <ProjectReference Include="..\..\src\Multiformats\Placies.Multifroamts.MultiCodec\Placies.Multifroamts.MultiCodec.fsproj" />
+        <ProjectReference Include="..\..\src\Multiformats\Placies.Multiformats.MultiHash\Placies.Multiformats.MultiHash.fsproj" />
+        <ProjectReference Include="..\..\src\Multiformats\Placies.Cid\Placies.Cid.fsproj" />
     </ItemGroup>
 
 </Project>
