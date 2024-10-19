@@ -4,11 +4,11 @@
     "net8.0": {
       "Argu": {
         "type": "Direct",
-        "requested": "[6.1.1, )",
-        "resolved": "6.1.1",
-        "contentHash": "5SBLYihaZ6/YNpRU+0v0QLsCk7ABmOWNOUwkXVUql2w7kJ6Hi4AFhgIv5XLTtxTid5/xrJAL+PglQkNcjANCJg==",
+        "requested": "[6.2.4, )",
+        "resolved": "6.2.4",
+        "contentHash": "RuANu8+L1P2HWozmbRXkj6MQGYwP5DL2wdARfBPtRjsLS8TSgwYjOKxMnY5LtjmHLlMBD3u2+MfbAy8xMGg8Qg==",
         "dependencies": {
-          "FSharp.Core": "4.3.2",
+          "FSharp.Core": "6.0.7",
           "System.Configuration.ConfigurationManager": "4.4.0"
         }
       },
@@ -65,7 +65,7 @@
         "dependencies": {
           "FSharp.Core": "[8.0.401, )",
           "Placies.Utils": "[1.0.0, )",
-          "SimpleBase": "[4.0.0, )"
+          "SimpleBase": "[4.0.2, )"
         }
       },
       "placies.multiformats.multihash": {
@@ -89,8 +89,8 @@
         "type": "Project",
         "dependencies": {
           "FSharp.Core": "[8.0.401, )",
-          "FsToolkit.ErrorHandling": "[4.9.0, )",
-          "FsToolkit.ErrorHandling.TaskResult": "[4.9.0, )"
+          "FsToolkit.ErrorHandling": "[4.17.0, )",
+          "FsToolkit.ErrorHandling.TaskResult": "[4.17.0, )"
         }
       },
       "placies.varint": {
@@ -101,20 +101,20 @@
       },
       "FsToolkit.ErrorHandling": {
         "type": "CentralTransitive",
-        "requested": "[4.9.0, )",
-        "resolved": "4.9.0",
-        "contentHash": "Z8p+upgAX6nipdMMFUlbr0KajChF20BZ1aTzAokQ/aAboBt5AWKIfNpTHSq+veM2aPdoPJTrbvIA7NR0cL2BIQ==",
+        "requested": "[4.17.0, )",
+        "resolved": "4.17.0",
+        "contentHash": "eW37u0mip2bCjXK+z5VJUN1VdRz2QZYVZN1xLwKagrw4IS9jjQSR8P2OW5msE82AShpW2fM9ySEVxtZfoPBTiA==",
         "dependencies": {
           "FSharp.Core": "7.0.300"
         }
       },
       "FsToolkit.ErrorHandling.TaskResult": {
         "type": "CentralTransitive",
-        "requested": "[4.9.0, )",
-        "resolved": "4.9.0",
-        "contentHash": "bB/zkBn2Gc9wVPXt+ytPP5nsP/FKl7PfuV4+LrVz98yCEvZkWaEkwxnHePXtWA6KZrvlLLmREv02sZJAQSmQPA==",
+        "requested": "[4.17.0, )",
+        "resolved": "4.17.0",
+        "contentHash": "0468/s/OxckJ2RfZBzwAWQzksztA0FlRmHHauBHJ1pYBpHvXevKMowWeJQRfqZp+24whM9DaNzP8fWDScQ8aPA==",
         "dependencies": {
-          "FsToolkit.ErrorHandling": "4.9.0"
+          "FsToolkit.ErrorHandling": "4.17.0"
         }
       },
       "Portable.BouncyCastle": {
@@ -125,9 +125,9 @@
       },
       "SimpleBase": {
         "type": "CentralTransitive",
-        "requested": "[4.0.0, )",
-        "resolved": "4.0.0",
-        "contentHash": "X9VdQGnMwRZ7ve1eGgzoRxV/srWCQfMWRaFzK8KsnA9P2N0LKUcELAdSW8noAY0JPKkDXNDtpH65CeVQwDDf+w==",
+        "requested": "[4.0.2, )",
+        "resolved": "4.0.2",
+        "contentHash": "sNKHP2Qzy4DafamgH44UGg1YeyHFT08AMgHPraxYt4CVBoHHYD5f0MjbBfdmtGca69xikPU5aV8H+MMP7ZnfIg==",
         "dependencies": {
           "System.Memory": "4.5.5"
         }

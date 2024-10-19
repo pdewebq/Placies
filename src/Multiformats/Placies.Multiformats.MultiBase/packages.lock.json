@@ -10,9 +10,9 @@
       },
       "SimpleBase": {
         "type": "Direct",
-        "requested": "[4.0.0, )",
-        "resolved": "4.0.0",
-        "contentHash": "X9VdQGnMwRZ7ve1eGgzoRxV/srWCQfMWRaFzK8KsnA9P2N0LKUcELAdSW8noAY0JPKkDXNDtpH65CeVQwDDf+w==",
+        "requested": "[4.0.2, )",
+        "resolved": "4.0.2",
+        "contentHash": "sNKHP2Qzy4DafamgH44UGg1YeyHFT08AMgHPraxYt4CVBoHHYD5f0MjbBfdmtGca69xikPU5aV8H+MMP7ZnfIg==",
         "dependencies": {
           "System.Memory": "4.5.5"
         }
@@ -26,26 +26,26 @@
         "type": "Project",
         "dependencies": {
           "FSharp.Core": "[8.0.401, )",
-          "FsToolkit.ErrorHandling": "[4.9.0, )",
-          "FsToolkit.ErrorHandling.TaskResult": "[4.9.0, )"
+          "FsToolkit.ErrorHandling": "[4.17.0, )",
+          "FsToolkit.ErrorHandling.TaskResult": "[4.17.0, )"
         }
       },
       "FsToolkit.ErrorHandling": {
         "type": "CentralTransitive",
-        "requested": "[4.9.0, )",
-        "resolved": "4.9.0",
-        "contentHash": "Z8p+upgAX6nipdMMFUlbr0KajChF20BZ1aTzAokQ/aAboBt5AWKIfNpTHSq+veM2aPdoPJTrbvIA7NR0cL2BIQ==",
+        "requested": "[4.17.0, )",
+        "resolved": "4.17.0",
+        "contentHash": "eW37u0mip2bCjXK+z5VJUN1VdRz2QZYVZN1xLwKagrw4IS9jjQSR8P2OW5msE82AShpW2fM9ySEVxtZfoPBTiA==",
         "dependencies": {
           "FSharp.Core": "7.0.300"
         }
       },
       "FsToolkit.ErrorHandling.TaskResult": {
         "type": "CentralTransitive",
-        "requested": "[4.9.0, )",
-        "resolved": "4.9.0",
-        "contentHash": "bB/zkBn2Gc9wVPXt+ytPP5nsP/FKl7PfuV4+LrVz98yCEvZkWaEkwxnHePXtWA6KZrvlLLmREv02sZJAQSmQPA==",
+        "requested": "[4.17.0, )",
+        "resolved": "4.17.0",
+        "contentHash": "0468/s/OxckJ2RfZBzwAWQzksztA0FlRmHHauBHJ1pYBpHvXevKMowWeJQRfqZp+24whM9DaNzP8fWDScQ8aPA==",
         "dependencies": {
-          "FsToolkit.ErrorHandling": "4.9.0"
+          "FsToolkit.ErrorHandling": "4.17.0"
         }
       }
     }
