@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageVersion Include="FSharp.Core" Version="8.0.100" />
+        <PackageVersion Include="FSharp.Core" Version="8.0.401" />
 
         <PackageVersion Include="FsToolkit.ErrorHandling" Version="4.9.0" />
         <PackageVersion Include="FsToolkit.ErrorHandling.TaskResult" Version="4.9.0" />

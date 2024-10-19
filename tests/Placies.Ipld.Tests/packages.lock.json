@@ -10,9 +10,9 @@
       },
       "FSharp.Core": {
         "type": "Direct",
-        "requested": "[8.0.100, )",
-        "resolved": "8.0.100",
-        "contentHash": "ZOVZ/o+jI3ormTZOa28Wh0tSRoyle1f7lKFcUN61sPiXI7eDZu8eSveFybgTeyIEyW0ujjp31cp7GOglDgsNEg=="
+        "requested": "[8.0.401, )",
+        "resolved": "8.0.401",
+        "contentHash": "pvmquLrs82m8WqWB49Gj+hsmnWURkUbc++pJ0P2NdrEv1ZVVrhDNjSiFNP4wW4HiTowwaRhjiBc5IKNV35Vf/A=="
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
@@ -1059,7 +1059,7 @@
       "placies.cid": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.100, )",
+          "FSharp.Core": "[8.0.401, )",
           "Placies.Multiformats.MultiHash": "[1.0.0, )",
           "Placies.Utils": "[1.0.0, )"
         }
@@ -1067,7 +1067,7 @@
       "placies.ipld": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.100, )",
+          "FSharp.Core": "[8.0.401, )",
           "Placies.Cid": "[1.0.0, )",
           "Placies.Multiformats.MultiBase": "[1.0.0, )",
           "Placies.Multifroamts.MultiCodec": "[1.0.0, )"
@@ -1076,7 +1076,7 @@
       "placies.ipld.dagcbor": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.100, )",
+          "FSharp.Core": "[8.0.401, )",
           "PeterO.Cbor": "[4.5.2, )",
           "Placies.Ipld": "[1.0.0, )"
         }
@@ -1084,7 +1084,7 @@
       "placies.ipld.dagjson": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.100, )",
+          "FSharp.Core": "[8.0.401, )",
           "Newtonsoft.Json": "[13.0.3, )",
           "Placies.Ipld": "[1.0.0, )"
         }
@@ -1092,7 +1092,7 @@
       "placies.multiformats.multibase": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.100, )",
+          "FSharp.Core": "[8.0.401, )",
           "Placies.Utils": "[1.0.0, )",
           "SimpleBase": "[4.0.0, )"
         }
@@ -1100,7 +1100,7 @@
       "placies.multiformats.multihash": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.100, )",
+          "FSharp.Core": "[8.0.401, )",
           "Placies.Multiformats.MultiBase": "[1.0.0, )",
           "Placies.Multifroamts.MultiCodec": "[1.0.0, )",
           "Placies.Utils": "[1.0.0, )",
@@ -1110,14 +1110,14 @@
       "placies.multifroamts.multicodec": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.100, )",
+          "FSharp.Core": "[8.0.401, )",
           "Placies.Utils": "[1.0.0, )"
         }
       },
       "placies.utils": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.100, )",
+          "FSharp.Core": "[8.0.401, )",
           "FsToolkit.ErrorHandling": "[4.9.0, )",
           "FsToolkit.ErrorHandling.TaskResult": "[4.9.0, )"
         }
@@ -1125,7 +1125,7 @@
       "placies.varint": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.100, )"
+          "FSharp.Core": "[8.0.401, )"
         }
       },
       "FsToolkit.ErrorHandling": {
