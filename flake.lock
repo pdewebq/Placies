@@ -5,11 +5,11 @@
         "nixpkgs-lib": "nixpkgs-lib"
       },
       "locked": {
-        "lastModified": 1701473968,
-        "narHash": "sha256-YcVE5emp1qQ8ieHUnxt1wCZCC3ZfAS+SRRWZ2TMda7E=",
+        "lastModified": 1727826117,
+        "narHash": "sha256-K5ZLCyfO/Zj9mPFldf3iwS6oZStJcU4tSpiXTMYaaL0=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "34fed993f1674c8d06d58b37ce1e0fe5eebcb9f5",
+        "rev": "3d04084d54bedc3d6b8b736c70ef449225c361b1",
         "type": "github"
       },
       "original": {
@@ -19,56 +19,63 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1703013332,
-        "narHash": "sha256-+tFNwMvlXLbJZXiMHqYq77z/RfmpfpiI3yjL6o/Zo9M=",
-        "owner": "nixos",
+        "lastModified": 1729233716,
+        "narHash": "sha256-6KKTybx+J3Es62MNYtmka0Hb8m1H0NSdlOSSjvXHvkU=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "54aac082a4d9bb5bbc5c4e899603abfb76a3f6d6",
+        "rev": "c858402c2a629211153137fb8d39be9fde4694ff",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
     },
     "nixpkgs-lib": {
       "locked": {
-        "dir": "lib",
-        "lastModified": 1701253981,
-        "narHash": "sha256-ztaDIyZ7HrTAfEEUt9AtTDNoCYxUdSd6NrRHaYOIxtk=",
+        "lastModified": 1727825735,
+        "narHash": "sha256-0xHYkMkeLVQAMa7gvkddbPqpxph+hDzdu1XdGPJR+Os=",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/fb192fec7cc7a4c26d51779e9bab07ce6fa5597a.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/fb192fec7cc7a4c26d51779e9bab07ce6fa5597a.tar.gz"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1729233716,
+        "narHash": "sha256-6KKTybx+J3Es62MNYtmka0Hb8m1H0NSdlOSSjvXHvkU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e92039b55bcd58469325ded85d4f58dd5a4eaf58",
+        "rev": "c858402c2a629211153137fb8d39be9fde4694ff",
         "type": "github"
       },
       "original": {
-        "dir": "lib",
         "owner": "NixOS",
-        "ref": "nixos-unstable",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
     },
-    "nuget-packageslock2nix": {
+    "nuget-packages-lock2nuget-deps": {
       "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
+        "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1690832952,
-        "narHash": "sha256-lK8lnmcy+4aj0zBUDNh4icamVgQ2jlIKPNx007/zEOA=",
-        "owner": "mdarocha",
-        "repo": "nuget-packageslock2nix",
-        "rev": "5897dae0aaee226bce938afd787ada535a8f0ea2",
+        "lastModified": 1729300353,
+        "narHash": "sha256-qyHBzTQmZSgDJQOOMWT5nRdn8YtFe62MNjKZVhTMkLw=",
+        "owner": "Prunkles",
+        "repo": "nuget-packages-lock2nuget-deps",
+        "rev": "2e672d3b086671c0dc3700a324e78100de5fa56e",
         "type": "github"
       },
       "original": {
-        "owner": "mdarocha",
-        "ref": "main",
-        "repo": "nuget-packageslock2nix",
+        "owner": "Prunkles",
+        "repo": "nuget-packages-lock2nuget-deps",
         "type": "github"
       }
     },
@@ -76,7 +83,7 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs",
-        "nuget-packageslock2nix": "nuget-packageslock2nix"
+        "nuget-packages-lock2nuget-deps": "nuget-packages-lock2nuget-deps"
       }
     }
   },
