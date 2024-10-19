@@ -1,4 +1,5 @@
 {
+  lib,
   buildDotnetModule,
   dotnetCorePackages,
   nugetPackagesLockToNugetDeps,
@@ -11,7 +12,7 @@ let
 in
 buildDotnetModule (finalAttrs: {
   pname = "Placies.Gateways.AllowlistProxyGateway.Server";
-  version = "0.0.1";
+  version = lib.strings.fileContents "${repoSrc}/release-version.txt";
   inherit dotnet-sdk;
   inherit dotnet-runtime;
   src = repoSrc;

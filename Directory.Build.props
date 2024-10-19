@@ -13,4 +13,15 @@
         <PackageReference Include="FSharp.Core" IsImplicitilyDefined="true" />
     </ItemGroup>
 
+    <!--
+        Set `Version` property from `/release-version.txt`.
+        Do it only for build, but not for restore, to ensure that lock files have the default 1.0.0 version for project dependencies.
+        I am not sure how it works, but see: https://stackoverflow.com/a/58987087/10033660
+    -->
+    <Target Name="SetVersionForBuild" BeforeTargets="BeforeResolveReferences">
+        <ReadLinesFromFile File="$(MSBuildThisFileDirectory)release-version.txt">
+            <Output TaskParameter="Lines" PropertyName="Version" />
+        </ReadLinesFromFile>
+    </Target>
+
 </Project>
