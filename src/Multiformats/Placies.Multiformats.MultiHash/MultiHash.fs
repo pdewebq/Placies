@@ -32,8 +32,8 @@ module MultiHash =
         { HashFunctionCode = hashFunctionCode; Digest = digest }
 
     let ofStream (stream: Stream) : MultiHash =
-        let hashFuncCode = stream.ReadVarint32()
-        let digestSize = stream.ReadVarint32()
+        let hashFuncCode = stream.ReadVarIntAsInt32()
+        let digestSize = stream.ReadVarIntAsInt32()
         let digest = Array.zeroCreate digestSize
         stream.Read(digest.AsSpan()) |> ignore
         create hashFuncCode digest
@@ -47,8 +47,8 @@ module MultiHash =
             MultiBaseInfos.Base58Btc.BaseEncoder.Decode(input) |> ofBytes
 
     let writeToStream (stream: Stream) (multiHash: MultiHash) : unit =
-        stream.WriteVarint(multiHash.HashFunctionCode)
-        stream.WriteVarint(multiHash.DigestSize)
+        stream.WriteVarInt(multiHash.HashFunctionCode)
+        stream.WriteVarInt(multiHash.DigestSize)
         stream.Write(multiHash.Digest)
 
     let toBase58String (multiHash: MultiHash) : string =

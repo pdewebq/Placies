@@ -38,10 +38,10 @@ module Cid =
         else
             let! bytes = MultiBase.tryDecode multibaseProvider input
             use stream = new MemoryStream(bytes)
-            do! stream.ReadVarint32() |> Result.requireEqualTo 1 "Unknown CID version"
+            do! stream.ReadVarIntAsInt32() |> Result.requireEqualTo 1 "Unknown CID version"
             return {
                 Version = 1
-                ContentTypeCode = stream.ReadVarint32()
+                ContentTypeCode = stream.ReadVarIntAsInt32()
                 MultiHash = MultiHash.ofStream stream
             }
     }
@@ -53,8 +53,8 @@ module Cid =
         if cid.Version = 0 then
             cid.MultiHash |> MultiHash.writeToStream stream
         else
-            stream.WriteVarint(cid.Version)
-            stream.WriteVarint(cid.ContentTypeCode)
+            stream.WriteVarInt(cid.Version)
+            stream.WriteVarInt(cid.ContentTypeCode)
             cid.MultiHash |> MultiHash.writeToStream stream
 
     let ofByteArray (bytes: byte array) : Cid =
@@ -62,8 +62,8 @@ module Cid =
             create 0 MultiCodecInfos.DagPb.Code (MultiHash.ofBytes bytes)
         else
             use stream = new MemoryStream(bytes)
-            let version = stream.ReadVarint32()
-            let contentType = stream.ReadVarint32()
+            let version = stream.ReadVarIntAsInt32()
+            let contentType = stream.ReadVarIntAsInt32()
             let multiHash = MultiHash.ofStream stream
             create version contentType multiHash
 

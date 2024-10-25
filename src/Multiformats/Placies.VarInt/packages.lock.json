@@ -7,6 +7,32 @@
         "requested": "[8.0.401, )",
         "resolved": "8.0.401",
         "contentHash": "pvmquLrs82m8WqWB49Gj+hsmnWURkUbc++pJ0P2NdrEv1ZVVrhDNjSiFNP4wW4HiTowwaRhjiBc5IKNV35Vf/A=="
+      },
+      "placies.utils": {
+        "type": "Project",
+        "dependencies": {
+          "FSharp.Core": "[8.0.401, )",
+          "FsToolkit.ErrorHandling": "[4.17.0, )",
+          "FsToolkit.ErrorHandling.TaskResult": "[4.17.0, )"
+        }
+      },
+      "FsToolkit.ErrorHandling": {
+        "type": "CentralTransitive",
+        "requested": "[4.17.0, )",
+        "resolved": "4.17.0",
+        "contentHash": "eW37u0mip2bCjXK+z5VJUN1VdRz2QZYVZN1xLwKagrw4IS9jjQSR8P2OW5msE82AShpW2fM9ySEVxtZfoPBTiA==",
+        "dependencies": {
+          "FSharp.Core": "7.0.300"
+        }
+      },
+      "FsToolkit.ErrorHandling.TaskResult": {
+        "type": "CentralTransitive",
+        "requested": "[4.17.0, )",
+        "resolved": "4.17.0",
+        "contentHash": "0468/s/OxckJ2RfZBzwAWQzksztA0FlRmHHauBHJ1pYBpHvXevKMowWeJQRfqZp+24whM9DaNzP8fWDScQ8aPA==",
+        "dependencies": {
+          "FsToolkit.ErrorHandling": "4.17.0"
+        }
       }
     }
   }
