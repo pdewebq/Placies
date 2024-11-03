@@ -1,8 +1,15 @@
 namespace Placies.Ipld.Tests
 
+open System.Collections.Generic
 open System.IO
+open System.Text
+open Xunit
+open Xunit.Abstractions
+open Swensen.Unquote
 open Placies
+open Placies.Utils
 open Placies.Utils.Collections
+open Placies.Ipld
 open Placies.Multiformats
 
 type FixtureEntry = {
@@ -54,3 +61,39 @@ module IpldFixtures =
                         DataBytes = fixtureEntry.DataBytes
                     }
     }
+
+    let testReencoding (output: ITestOutputHelper) (fixturesToSkip: IReadOnlyDictionary<string, string>) (codec: ICodec) (fixture: CodecFixture) : unit =
+        output.WriteLine($"Fixture '%s{fixture.Name}'")
+        ( let condition, reason = fixturesToSkip.TryGetValue(fixture.Name)
+          Skip.If(condition, reason) )
+
+        output.WriteLine("Fixture bytes:")
+        output.WriteLine(fixture.DataBytes.ToHexString())
+        output.WriteLine("")
+        output.WriteLine("Fixture text:")
+        output.WriteLine(Encoding.UTF8.GetString(fixture.DataBytes))
+        output.WriteLine("")
+        output.WriteLine($"Fixture CID: {fixture.Cid}")
+        output.WriteLine("")
+        output.WriteLine("")
+
+        use dataStream = new MemoryStream(fixture.DataBytes)
+        let dataModelNode = codec.TryDecodeAsync(dataStream) |> Task.runSynchronously |> ResultExn.getOk
+
+        output.WriteLine("Decoded DataModel node:")
+        output.WriteLine($"%A{dataModelNode}")
+        output.WriteLine("")
+
+        use reencodedDataStream = new MemoryStream()
+        let reencodedCid = codec.TryEncodeWithCidAsync(reencodedDataStream, dataModelNode, 1, MultiHashInfos.Sha2_256) |> Task.runSynchronously |> ResultExn.getOk
+        let reencodedDataBytes = reencodedDataStream.ToArray()
+
+        output.WriteLine("Reencoded bytes:")
+        output.WriteLine(reencodedDataBytes.ToHexString())
+        output.WriteLine("")
+        output.WriteLine("Reencoded text:")
+        output.WriteLine(Encoding.UTF8.GetString(reencodedDataBytes))
+        output.WriteLine("")
+        output.WriteLine($"Reencoded CID: {reencodedCid}")
+
+        test <@ Cid.encode fixture.Cid = Cid.encode reencodedCid @>
