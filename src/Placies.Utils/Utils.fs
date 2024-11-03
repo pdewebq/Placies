@@ -7,7 +7,7 @@ open System.Diagnostics.CodeAnalysis
 module GeneralUtils =
 
     [<Obsolete("TODO")>]
-    let todo<'a> : 'a = failwith "TODO"
+    let inline todo<'a> : 'a = failwith "TODO"
 
     let inline ( ^ ) f x = f x
 

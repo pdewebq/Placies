@@ -180,6 +180,13 @@
           "Placies.Ipld": "[1.0.0, )"
         }
       },
+      "placies.ipld.dagpb": {
+        "type": "Project",
+        "dependencies": {
+          "FSharp.Core": "[8.0.401, )",
+          "Placies.Ipld": "[1.0.0, )"
+        }
+      },
       "placies.multiformats.multibase": {
         "type": "Project",
         "dependencies": {
@@ -216,7 +223,8 @@
       "placies.varint": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "[8.0.401, )"
+          "FSharp.Core": "[8.0.401, )",
+          "Placies.Utils": "[1.0.0, )"
         }
       },
       "FsToolkit.ErrorHandling": {
