@@ -20,6 +20,9 @@ module Result =
         with ex ->
             Error ex
 
+    let inline requireTrueWith (errorThunk: unit -> 'error) (value: bool) : Result<unit, 'error> =
+        if value then Ok () else Error (errorThunk ())
+
 // ----
 
 type ResultExn<'a> = Result<'a, exn>
