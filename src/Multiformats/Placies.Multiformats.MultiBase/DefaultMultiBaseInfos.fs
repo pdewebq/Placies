@@ -10,7 +10,7 @@ open Placies.Utils
 [<RequireQualifiedAccess>]
 module MultiBaseInfos =
 
-    let encodeAnyBase (baseAlphabet: string) (input: byte array) : string =
+    let encodeAnyBase (baseAlphabet: string) (input: ReadOnlySpan<byte>) : string =
         let mutable number = BigInteger(input)
         let l = baseAlphabet.Length
         let result = StringBuilder()
@@ -21,11 +21,12 @@ module MultiBaseInfos =
             number <- number / BigInteger(l)
         result.ToString()
 
-    let decodeAnyBase (baseAlphabet: string) (input: string) : byte array =
+    let decodeAnyBase (baseAlphabet: string) (input: ReadOnlySpan<char>) : byte array =
         let mutable result = BigInteger(0)
         let b = baseAlphabet.Length
         let mutable pow = 0
-        for c in input.ToCharArray() |> Array.rev |> String do
+        for i in input.Length-1 .. -1 .. 0 do
+            let c = input.[i]
             let idx = baseAlphabet.IndexOf(c)
             if idx = -1 then failwith ""
             result <- result + BigInteger.Pow(b, pow) * BigInteger(idx)
@@ -38,35 +39,35 @@ module MultiBaseInfos =
 
     let Base10 = {
         Name = "base10"; PrefixCharacter = '9'
-        BaseEncoder = BaseEncoder.create (fun bytes -> encodeAnyBase base10Alphabet bytes) (fun text -> decodeAnyBase base10Alphabet text)
+        BaseCoder = BaseEncoder.create (fun bytes -> encodeAnyBase base10Alphabet bytes.Span) (fun text -> decodeAnyBase base10Alphabet text.Span)
     }
     let Base16 = {
         Name = "base16"; PrefixCharacter = 'f'
-        BaseEncoder = BaseEncoder.create (fun bytes -> SimpleBase.Base16.LowerCase.Encode(bytes)) (fun text -> SimpleBase.Base16.LowerCase.Decode(text))
+        BaseCoder = BaseEncoder.create (fun bytes -> SimpleBase.Base16.LowerCase.Encode(bytes.Span)) (fun text -> SimpleBase.Base16.LowerCase.Decode(text.Span))
     }
     let Base32 = {
         Name = "base32"; PrefixCharacter = 'b'
-        BaseEncoder = BaseEncoder.create (fun bytes -> SimpleBase.Base32.Rfc4648.Encode(bytes, false).ToLowerInvariant()) (fun text -> SimpleBase.Base32.Rfc4648.Decode(text))
+        BaseCoder = BaseEncoder.create (fun bytes -> SimpleBase.Base32.Rfc4648.Encode(bytes.Span, false).ToLowerInvariant()) (fun text -> SimpleBase.Base32.Rfc4648.Decode(text.Span))
     }
     let Base36 = {
         Name = "base36"; PrefixCharacter = 'k'
-        BaseEncoder = BaseEncoder.create (fun bytes -> encodeAnyBase base36Alphabet bytes) (fun text -> decodeAnyBase base36Alphabet text)
+        BaseCoder = BaseEncoder.create (fun bytes -> encodeAnyBase base36Alphabet bytes.Span) (fun text -> decodeAnyBase base36Alphabet text.Span)
     }
     let Base58Btc = {
         Name = "base58btc"; PrefixCharacter = 'z'
-        BaseEncoder = BaseEncoder.create (fun bytes -> SimpleBase.Base58.Bitcoin.Encode(bytes)) (fun text -> SimpleBase.Base58.Bitcoin.Decode(text))
+        BaseCoder = BaseEncoder.create (fun bytes -> SimpleBase.Base58.Bitcoin.Encode(bytes.Span)) (fun text -> SimpleBase.Base58.Bitcoin.Decode(text.Span))
     }
     let Base64 = {
         Name = "base64"; PrefixCharacter = 'm'
-        BaseEncoder = BaseEncoder.create (fun bytes -> Convert.ToBase64StringNoPad(bytes)) (fun text -> Convert.FromBase64StringNoPad(text))
+        BaseCoder = BaseEncoder.create (fun bytes -> Convert.ToBase64StringNoPad(bytes.Span)) (fun text -> Convert.FromBase64StringNoPad(text.Span))
     }
     let Base64Pad = {
         Name = "base64pad"; PrefixCharacter = 'M'
-        BaseEncoder = BaseEncoder.create (fun bytes -> Convert.ToBase64String(bytes)) (fun text -> Convert.FromBase64String(text))
+        BaseCoder = BaseEncoder.create (fun bytes -> Convert.ToBase64String(bytes.Span)) (fun text -> Convert.FromBase64Chars(text.Span))
     }
     let Base64Url = {
         Name = "base64url"; PrefixCharacter = 'u'
-        BaseEncoder = BaseEncoder.create (fun bytes -> Convert.ToBase64StringUrl(bytes)) (fun text -> Convert.FromBase64StringUrl(text))
+        BaseCoder = BaseEncoder.create (fun bytes -> Convert.ToBase64StringUrl(bytes.Span)) (fun text -> Convert.FromBase64StringUrl(text.Span))
     }
 
 

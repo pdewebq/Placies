@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="Memory.fs" />
         <Compile Include="Utils.fs" />
         <Compile Include="Option.fs" />
         <Compile Include="Result.fs" />

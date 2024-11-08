@@ -71,7 +71,7 @@ module SigningContentRoot =
         stream
 
     let verifyVarsigSignatureRsa (multibaseProvider: IMultiBaseProvider) (contentRoot: IpfsContentRoot) (rsaPublicKey: RsaKeyParameters) (varsigStr: string) = result {
-        let varsigBytes = MultiBase.tryDecode multibaseProvider varsigStr |> Result.getOk
+        let varsigBytes = MultiBase.tryDecode multibaseProvider (varsigStr.AsMemory()) |> Result.getOk
         use stream = new MemoryStream(varsigBytes)
         let varsigCode = stream.ReadVarIntAsInt32()
         do! Result.requireEqual varsigCode MultiCodecInfos.Varsig.Code $"{varsigCode} is not varsig"
@@ -152,7 +152,7 @@ module SigningContentRoot =
         let ed25519Signer = Ed25519Signer()
         ed25519Signer.Init(false, ed25519PublicKey)
 
-        let varsigBytes = varsigStr |> MultiBase.decode multibaseProvider
+        let varsigBytes = varsigStr.AsMemory() |> MultiBase.decode multibaseProvider
         use stream = new MemoryStream(varsigBytes)
         let varsigCode = stream.ReadVarIntAsInt32()
         do! Result.requireEqual varsigCode MultiCodecInfos.Varsig.Code $"{varsigCode} is not varsig"

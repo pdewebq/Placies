@@ -73,7 +73,7 @@ module MultiHash =
 
     let parseBase58String (input: string) : Result<MultiHash, exn> =
         Result.tryWith ^fun () ->
-            MultiBaseInfos.Base58Btc.BaseEncoder.Decode(input) |> ofBytes
+            MultiBaseInfos.Base58Btc.BaseCoder.Decode(input.AsMemory()) |> ofBytes
 
     let getSize (multiHash: MultiHash) : int =
         VarInt.getSizeOfInt32 multiHash.HashFunctionCode
@@ -98,7 +98,7 @@ module MultiHash =
         use stream = new MemoryStream()
         multiHash |> writeToStream stream
         let bytes = stream.ToArray()
-        MultiBaseInfos.Base58Btc.BaseEncoder.Encode(bytes)
+        MultiBaseInfos.Base58Btc.BaseCoder.Encode(bytes)
 
     /// <example>
     /// <c>sha2-256 : 256 : 2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824</c>
