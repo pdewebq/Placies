@@ -25,6 +25,10 @@
             inherit nugetPackagesLockToNugetDeps;
             inherit repoSrc;
           };
+          packages.placies-cli = pkgs.callPackage ./nix/pkgs/placies-cli {
+            inherit nugetPackagesLockToNugetDeps;
+            inherit repoSrc;
+          };
         };
     };
 }

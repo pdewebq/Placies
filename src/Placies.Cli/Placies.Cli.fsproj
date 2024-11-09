@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="MultiformatsSubCommand.fs" />
+        <Compile Include="IpldSubCommand.fs" />
+        <Compile Include="Program.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Argu" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Ipld\Placies.Ipld.DagCbor\Placies.Ipld.DagCbor.fsproj" />
+      <ProjectReference Include="..\Ipld\Placies.Ipld.DagJson\Placies.Ipld.DagJson.fsproj" />
+      <ProjectReference Include="..\Ipld\Placies.Ipld\Placies.Ipld.fsproj" />
+    </ItemGroup>
+
+</Project>

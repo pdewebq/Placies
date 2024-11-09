@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ipld", "Ipld", "{28D2A6E8-D
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Ipld.DagPb", "src\Ipld\Placies.Ipld.DagPb\Placies.Ipld.DagPb.fsproj", "{5B1B8BB2-7A34-400A-932A-12AEC618691D}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Placies.Cli", "src\Placies.Cli\Placies.Cli.fsproj", "{0BADD618-856D-4D56-A819-FFBF2576CF4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,6 +124,10 @@ Global
 		{5B1B8BB2-7A34-400A-932A-12AEC618691D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B1B8BB2-7A34-400A-932A-12AEC618691D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B1B8BB2-7A34-400A-932A-12AEC618691D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BADD618-856D-4D56-A819-FFBF2576CF4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BADD618-856D-4D56-A819-FFBF2576CF4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BADD618-856D-4D56-A819-FFBF2576CF4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BADD618-856D-4D56-A819-FFBF2576CF4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8FA91459-C8C6-43A4-ADC5-5D91EA7A249D} = {D469DDCB-8563-4AC2-8CBD-3E4D9892C26A}
