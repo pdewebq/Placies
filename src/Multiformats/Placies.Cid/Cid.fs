@@ -38,7 +38,7 @@ module Cid =
     }
 
     let tryParseV1 (multiBaseProvider: IMultiBaseProvider) (input: string) : Result<Cid, string> = result {
-        let! bytes = MultiBase.tryDecode multiBaseProvider input
+        let! bytes = MultiBase.tryDecode multiBaseProvider (input.AsMemory())
         use stream = new MemoryStream(bytes)
         do! stream.ReadVarIntAsInt32() |> Result.requireEqualTo 1 "Unknown CID version"
         return {
@@ -119,7 +119,7 @@ type Cid with
             this.MultiHash |> MultiHash.toBase58String
         else
             let bytes = this |> Cid.toByteArray
-            bytes |> MultiBase.encode MultiBaseInfos.Base32
+            bytes.AsMemory().AsReadOnly() |> MultiBase.encode MultiBaseInfos.Base32
 
 type CidParser =
 

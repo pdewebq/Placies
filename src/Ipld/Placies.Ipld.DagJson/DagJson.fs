@@ -1,5 +1,6 @@
 namespace Placies.Ipld.DagJson
 
+open System
 open System.Collections.Generic
 open System.Text.Json
 open System.Text.Json.Nodes
@@ -26,7 +27,7 @@ module DagJson =
                     JsonObject([
                         KeyValuePair(
                             "bytes",
-                            JsonValue.Create(MultiBaseInfos.Base64.BaseEncoder.Encode(bytes)) :> JsonNode
+                            JsonValue.Create(MultiBaseInfos.Base64.BaseCoder.Encode(bytes)) :> JsonNode
                         )
                     ]) :> JsonNode
                 )
@@ -81,7 +82,7 @@ module DagJson =
                         let! bytesJsonNode = slashJsonObject.TryGetPropertyValue("bytes") |> Option.ofTryByref |> Result.requireSome "Object does not contain 'bytes' field"
                         let! bytesJsonValue = bytesJsonNode |> tryUnbox<JsonValue> |> Result.requireSome "Is not JsonValue"
                         let! bytesString = bytesJsonValue.TryGetValue<string>() |> Option.ofTryByref |> Result.requireSome "Is not string"
-                        let! bytes = Result.tryWith (fun () -> MultiBaseInfos.Base64.BaseEncoder.Decode(bytesString)) |> Result.mapError (fun ex -> $"Invalid Base64: {ex}")
+                        let! bytes = Result.tryWith (fun () -> MultiBaseInfos.Base64.BaseCoder.Decode(bytesString.AsMemory())) |> Result.mapError (fun ex -> $"Invalid Base64: {ex}")
                         return DataModelNode.Bytes bytes
                     }
                 | _ ->

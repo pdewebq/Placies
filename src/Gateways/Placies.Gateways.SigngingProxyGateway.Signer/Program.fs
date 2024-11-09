@@ -1,5 +1,6 @@
 ﻿module Placies.Gateways.SigningProxyGateway.Signer.Program
 
+open System
 open System.IO
 open System.Security.Cryptography
 open Argu
@@ -72,7 +73,7 @@ let main args =
             failwith $"Invalid content root: '{contentRootInput}'"
 
     let varsig = signContentRoot contentRoot
-    let varsig = varsig.ToArray() |> MultiBase.encode MultiBaseInfos.Base58Btc
+    let varsig = varsig.ToArray().AsMemory().AsReadOnly() |> MultiBase.encode MultiBaseInfos.Base58Btc
 
     match contentRoot with
     | IpfsContentRoot.Ipfs cid ->
